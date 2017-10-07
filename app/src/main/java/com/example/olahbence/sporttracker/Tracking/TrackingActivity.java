@@ -386,8 +386,8 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         try {
             FileWriter mFileWriter = new FileWriter(mTrackUpload, true);
             long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
-            mFileWriter.write(TimeUnit.SECONDS.toMinutes(timeSecond) + ":" + timeSecond % 60);
-            mFileWriter.write(String.valueOf(f1 / 1000));
+            mFileWriter.write(TimeUnit.SECONDS.toMinutes(timeSecond) + ":" + timeSecond % 60 + "\n");
+            mFileWriter.write(String.valueOf(f1 / 1000) + "\n");
 
             try {
                 FileReader mFileReader_Paces = new FileReader(averagePaces);
@@ -403,7 +403,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                     e.printStackTrace();
                 }
                 delete = averagePaces.delete();
-
+                mFileWriter.write("\n");
 
                 FileReader mFileReader_LatLong = new FileReader(mLocations);
                 BufferedReader bufferedReader_LatLong = new BufferedReader(mFileReader_LatLong);
@@ -414,7 +414,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                     }
                     bufferedReader_LatLong.close();
                     mFileReader_LatLong.close();
-                    mFileWriter.write("\n\n");
+                    mFileWriter.write("\n");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

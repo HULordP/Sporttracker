@@ -1,6 +1,8 @@
 package com.example.olahbence.sporttracker.Result.Result;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -10,20 +12,17 @@ import android.widget.TextView;
 
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Result.Result.FragmentAdapter.FragmentAdapter;
+import com.example.olahbence.sporttracker.Result.Result.Fragments.DistanceFragment;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.text.DateFormat;
 
 public class ResultActivity extends AppCompatActivity {
 
     private ViewPager pager;
     private PagerAdapter pagerAdapter;
-
-    private File file;
-    private TextView time;
-    private TextView distance;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +30,6 @@ public class ResultActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String value = extras.getString("Date");
-
             setContentView(R.layout.result_pager);
             Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
             setSupportActionBar(myToolbar);
@@ -47,42 +45,15 @@ public class ResultActivity extends AppCompatActivity {
         pagerAdapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
 
-        time = (TextView) findViewById(R.id.time);
-        distance = (TextView) findViewById(R.id.distance);
-
-        loadFile();
-
+        pagerAdapter.notifyDataSetChanged();
     }
 
-    private void loadFile() {
+    @Override
+    protected void onStop() {
+        super.onStop();
+
         String filePath = getApplicationContext().getFilesDir().getPath() + File.separator + "track.txt";
-        file = new File(filePath);
-        try {
-            FileReader filereader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(filereader);
-            String line;
-            int i = 0;
-            try {
-                while ((line = bufferedReader.readLine()) != null) {
-                    if (i == 0) {
-                        time.setText(line);
-                        i++;
-                    }
-                    if (i == 1) {
-                        distance.setText(line);
-                        i++;
-                    }
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            bufferedReader.close();
-            filereader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        File toDelete = new File(filePath);
+        boolean b = toDelete.delete();
     }
-
 }

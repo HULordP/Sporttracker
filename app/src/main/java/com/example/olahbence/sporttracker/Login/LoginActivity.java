@@ -47,12 +47,28 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
-        setContentView(R.layout.activity_login);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Login");
-        mEmail = (EditText) findViewById(R.id.email);
-        mPassword = (EditText) findViewById(R.id.password);
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            String userName = user.getDisplayName();
+            String aux = "Welcome " + userName;
+            Toast.makeText(LoginActivity.this, aux,
+                    Toast.LENGTH_SHORT).show();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(i);
+                    finish();
+                }
+            }, 1000);
+        } else {
+            setContentView(R.layout.activity_login);
+            Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(myToolbar);
+            getSupportActionBar().setTitle("Login");
+            mEmail = (EditText) findViewById(R.id.email);
+            mPassword = (EditText) findViewById(R.id.password);
+        }
     }
 
     @Override
@@ -70,7 +86,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-
         mAuth.signInWithEmailAndPassword(
                 mEmail.getText().toString(), mPassword.getText().toString())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -87,6 +102,8 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             if (user.isEmailVerified()) {
+                                //ToDo
+                                //atteni a database creationt az elso bejelentkezeshez
                                 FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
                                 DatabaseReference myRef = mDatabase.getReference("Tracks");
                                 myRef.setValue(user.getUid());
@@ -102,8 +119,7 @@ public class LoginActivity extends AppCompatActivity {
                                         finish();
                                     }
                                 }, 1000);
-                            }
-                            else{
+                            } else {
                                 Toast.makeText(LoginActivity.this, "Please verify your email",
                                         Toast.LENGTH_LONG).show();
                             }
@@ -118,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void skip(View view){
+    public void skip(View view) {
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(i);
         finish();

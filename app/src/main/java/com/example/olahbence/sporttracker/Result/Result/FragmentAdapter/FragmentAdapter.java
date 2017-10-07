@@ -24,9 +24,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         }
     }
 
-
     @Override
     public int getCount() {
         return NUM_PAGES;
     }
+
+
+
 }

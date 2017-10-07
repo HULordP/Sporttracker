@@ -4,9 +4,12 @@ package com.example.olahbence.sporttracker.Result.Result.Fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,7 @@ import com.example.olahbence.sporttracker.Result.Result.ResultRow;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,9 +33,6 @@ public class AveragePacesFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
-
-    private TextView averagePaces;
 
     private List<ResultRow> input;
 
@@ -44,6 +45,7 @@ public class AveragePacesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        input = new ArrayList<>();
     }
 
     @Override
@@ -113,5 +115,4 @@ public class AveragePacesFragment extends Fragment {
             e.printStackTrace();
         }
     }
-
 }
