@@ -10,6 +10,13 @@ public class Track {
     public String filename;
     public String time;
 
+    public Track() {
+    }
+
+    public Track(String filename) {
+        this.filename = filename;
+    }
+
     public String getKey() {
         return key;
     }
@@ -48,13 +55,6 @@ public class Track {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public Track() {
-    }
-
-    public Track(String filename) {
-        this.filename = filename;
     }
 
 }

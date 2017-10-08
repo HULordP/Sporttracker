@@ -11,8 +11,7 @@ public class ResultsListRow {
         this.mTime = mTime;
     }
 
-    public ResultsListRow()
-    {
+    public ResultsListRow() {
 
     }
 

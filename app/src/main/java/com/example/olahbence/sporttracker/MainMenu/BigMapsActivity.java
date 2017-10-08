@@ -2,13 +2,13 @@ package com.example.olahbence.sporttracker.MainMenu;
 
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
@@ -30,9 +30,9 @@ import com.google.android.gms.tasks.Task;
 
 public class BigMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleMap mMap;
     private boolean mLocationPermissionGranted;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation;
     private int DEFAULT_ZOOM = 14;
@@ -79,7 +79,7 @@ public class BigMapsActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     @Override
-    protected void onRestart(){
+    protected void onRestart() {
         super.onRestart();
         getDeviceLocation();
     }

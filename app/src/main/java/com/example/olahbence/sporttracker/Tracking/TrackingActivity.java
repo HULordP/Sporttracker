@@ -7,11 +7,11 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.example.olahbence.sporttracker.MainMenu.MainActivity;
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Tracking.Database.Track;
-import com.example.olahbence.sporttracker.Tracking.Database.User;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -55,6 +54,8 @@ import static java.lang.Double.parseDouble;
 
 public class TrackingActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    public static final String BR_NEW_RESTART = "BR_NEW_RESTART";
+    public static final String KEY_RESTART = "KEY_RESTART";
     private TextView mTime;
     private TextView mDistance;
     private TextView mAveragePace;
@@ -76,10 +77,123 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
     private LatLng prev;
     private long averagePace;
     private FirebaseDatabase mDatabase;
+    private BroadcastReceiver mLocationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mLastKnownLocation != null) {
+                mBeforeLastLocation = mLastKnownLocation;
+            }
 
-    public static final String BR_NEW_RESTART = "BR_NEW_RESTART";
-    public static final String KEY_RESTART = "KEY_RESTART";
+            mLastKnownLocation = intent.getParcelableExtra(ServiceLocation.KEY_LOCATION);
 
+            if (mBeforeLastLocation != null) {
+                if (map) {
+                    LatLng currentLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                    if (focus) {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                currentLocation, DEFAULT_ZOOM));
+                    }
+                }
+            }
+
+            double d1;
+            int i2;
+            String s1;
+            String s2;
+            String s3;
+            String s4;
+            String toDisplay;
+
+
+            d1 = mLastKnownLocation.getSpeed();
+            if (d1 != 0) {
+                double d2 = 16.0 + (2.0 / 3);
+                s1 = getString(R.string.current_pace);
+                s2 = Double.toString(d2 / d1);
+                i2 = s2.indexOf(".");
+                s3 = s2.substring(0, i2);
+                s4 = "0." + s2.substring(i2 + 1);
+                d2 = parseDouble(s4);
+                d2 = 60 * d2;
+                s4 = String.format(Locale.ENGLISH, "%.0f", d2);
+                toDisplay = s1 + "\n" + s3 + " : " + s4 + " min/km";
+                mCurrentPace.setText(toDisplay);
+            }
+            if (d1 == 0) {
+                s1 = getString(R.string.current_pace);
+                toDisplay = s1 + "\n" + " -- ";
+                mCurrentPace.setText(toDisplay);
+            }
+
+
+            s1 = getString(R.string.position_time);
+            s2 = new Date(mLastKnownLocation.getTime()).toString();
+            toDisplay = s1 + "\n" + s2;
+            mPositionTime.setText(toDisplay);
+        }
+    };
+    private BroadcastReceiver mLatLongReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (map) {
+                LatLng current = intent.getParcelableExtra(ServiceLocation.KEY_LAT_LONG);
+                if (!polyline_added) {
+                    prev = current;
+                    polyline_added = true;
+                }
+                mPolylineOptions.add(prev, current);
+                mPolylineOptions.visible(true);
+                mPolyline = mMap.addPolyline(mPolylineOptions);
+                prev = current;
+            }
+        }
+    };
+    private BroadcastReceiver mDistanceReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String s1;
+            String toDisplay;
+
+            if (mBeforeLastLocation != null) {
+                f1 = intent.getFloatExtra(ServiceLocation.KEY_DISTANCE, 0);
+                s1 = getString(R.string.distance);
+                toDisplay = s1 + "\n" + f1 / 1000 + " km";
+                mDistance.setText(toDisplay);
+            }
+        }
+    };
+    private BroadcastReceiver mAveragePaceReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String toDisplay;
+            String aux2;
+            long l1 = intent.getLongExtra(ServiceLocation.KEY_AVERAGE_PACE, 0);
+            aux2 = getString(R.string.avarage_pace);
+            if (l1 != 0) {
+                toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(l1) + " : " + l1 % 60 + " min/km";
+                mAveragePace.setText(toDisplay);
+                averagePace = l1;
+            } else {
+                toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(averagePace) + " : " + averagePace % 60 + " min/km";
+                mAveragePace.setText(toDisplay);
+            }
+        }
+    };
+    private BroadcastReceiver mTimeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mTimeTime = intent.getLongExtra(ServiceTime.KEY_TIME, 0);
+
+            String aux2;
+            String toDisplay;
+
+            long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
+            aux2 = getString(R.string.time);
+            toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(timeSecond) + " : " + timeSecond % 60 + "s";
+            mTime.setText(toDisplay);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,129 +323,6 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         map = false;
     }
 
-
-    private BroadcastReceiver mLocationReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (mLastKnownLocation != null) {
-                mBeforeLastLocation = mLastKnownLocation;
-            }
-
-            mLastKnownLocation = intent.getParcelableExtra(ServiceLocation.KEY_LOCATION);
-
-            if (mBeforeLastLocation != null) {
-                if (map) {
-                    LatLng currentLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
-                    if (focus) {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                currentLocation, DEFAULT_ZOOM));
-                    }
-                }
-            }
-
-            double d1;
-            int i2;
-            String s1;
-            String s2;
-            String s3;
-            String s4;
-            String toDisplay;
-
-
-            d1 = mLastKnownLocation.getSpeed();
-            if (d1 != 0) {
-                double d2 = 16.0 + (2.0 / 3);
-                s1 = getString(R.string.current_pace);
-                s2 = Double.toString(d2 / d1);
-                i2 = s2.indexOf(".");
-                s3 = s2.substring(0, i2);
-                s4 = "0." + s2.substring(i2 + 1);
-                d2 = parseDouble(s4);
-                d2 = 60 * d2;
-                s4 = String.format(Locale.ENGLISH, "%.0f", d2);
-                toDisplay = s1 + "\n" + s3 + " : " + s4 + " min/km";
-                mCurrentPace.setText(toDisplay);
-            }
-            if (d1 == 0) {
-                s1 = getString(R.string.current_pace);
-                toDisplay = s1 + "\n" + " -- ";
-                mCurrentPace.setText(toDisplay);
-            }
-
-
-            s1 = getString(R.string.position_time);
-            s2 = new Date(mLastKnownLocation.getTime()).toString();
-            toDisplay = s1 + "\n" + s2;
-            mPositionTime.setText(toDisplay);
-        }
-    };
-
-    private BroadcastReceiver mLatLongReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (map) {
-                LatLng current = intent.getParcelableExtra(ServiceLocation.KEY_LAT_LONG);
-                if (!polyline_added) {
-                    prev = current;
-                    polyline_added = true;
-                }
-                mPolylineOptions.add(prev, current);
-                mPolylineOptions.visible(true);
-                mPolyline = mMap.addPolyline(mPolylineOptions);
-                prev = current;
-            }
-        }
-    };
-
-    private BroadcastReceiver mDistanceReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            String s1;
-            String toDisplay;
-
-            if (mBeforeLastLocation != null) {
-                f1 = intent.getFloatExtra(ServiceLocation.KEY_DISTANCE, 0);
-                s1 = getString(R.string.distance);
-                toDisplay = s1 + "\n" + f1 / 1000 + " km";
-                mDistance.setText(toDisplay);
-            }
-        }
-    };
-
-    private BroadcastReceiver mAveragePaceReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String toDisplay;
-            String aux2;
-            long l1 = intent.getLongExtra(ServiceLocation.KEY_AVERAGE_PACE, 0);
-            aux2 = getString(R.string.avarage_pace);
-            if (l1 != 0) {
-                toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(l1) + " : " + l1 % 60 + " min/km";
-                mAveragePace.setText(toDisplay);
-                averagePace = l1;
-            } else {
-                toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(averagePace) + " : " + averagePace % 60 + " min/km";
-                mAveragePace.setText(toDisplay);
-            }
-        }
-    };
-
-    private BroadcastReceiver mTimeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mTimeTime = intent.getLongExtra(ServiceTime.KEY_TIME, 0);
-
-            String aux2;
-            String toDisplay;
-
-            long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
-            aux2 = getString(R.string.time);
-            toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(timeSecond) + " : " + timeSecond % 60 + "s";
-            mTime.setText(toDisplay);
-        }
-    };
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -340,10 +331,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     public void focus(View view) {
-        if (focus)
-            focus = false;
-        else
-            focus = true;
+        focus = !focus;
     }
 
     public void toSave(View view) {
@@ -438,7 +426,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         String tracks;
         tracks = filename;
         Track toUploadTrack = new Track(tracks);
-        toUploadTrack.setDistance(String.valueOf(f1/1000));
+        toUploadTrack.setDistance(String.valueOf(f1 / 1000));
         long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
         String timeToUpload = TimeUnit.SECONDS.toMinutes(timeSecond) + ":" + timeSecond % 60;
         toUploadTrack.setTime(timeToUpload);

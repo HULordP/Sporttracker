@@ -13,16 +13,8 @@ import java.util.List;
 public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder> {
     private List<ResultRow> values;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtAveragePace;
-        public View layout;
-
-        public ViewHolder(View v) {
-            super(v);
-            layout = v;
-            txtAveragePace = (TextView) v.findViewById(R.id.item_avaragepace);
-
-        }
+    public ResultAdapter(List<ResultRow> myDataset) {
+        values = myDataset;
     }
 
     public void add(int position, ResultRow item) {
@@ -33,10 +25,6 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
     public void remove(int position) {
         values.remove(position);
         notifyItemRemoved(position);
-    }
-
-    public ResultAdapter(List<ResultRow> myDataset) {
-        values = myDataset;
     }
 
     @Override
@@ -59,6 +47,18 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
     @Override
     public int getItemCount() {
         return values.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView txtAveragePace;
+        public View layout;
+
+        public ViewHolder(View v) {
+            super(v);
+            layout = v;
+            txtAveragePace = (TextView) v.findViewById(R.id.item_avaragepace);
+
+        }
     }
 
 }

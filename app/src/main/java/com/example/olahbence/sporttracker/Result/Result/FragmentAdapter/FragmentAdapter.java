@@ -17,10 +17,13 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch (position){
-            case 0: return new DistanceFragment();
-            case 1: return new AveragePacesFragment();
-            default: return new DistanceFragment();
+        switch (position) {
+            case 0:
+                return new DistanceFragment();
+            case 1:
+                return new AveragePacesFragment();
+            default:
+                return new DistanceFragment();
         }
     }
 
@@ -28,7 +31,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return NUM_PAGES;
     }
-
 
 
 }

@@ -2,13 +2,12 @@ package com.example.olahbence.sporttracker.MainMenu;
 
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Handler;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.TextView;
@@ -26,8 +25,8 @@ import java.util.Date;
 
 public class CurrentData extends AppCompatActivity {
 
-    private FusedLocationProviderClient mFusedLocationProviderClient;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
     private boolean mLocationPermissionGranted;
     private Location mLastKnownLocation;
     private TextView mLongitude;
@@ -79,7 +78,7 @@ public class CurrentData extends AppCompatActivity {
 
 
     @Override
-    protected void onRestart(){
+    protected void onRestart() {
         super.onRestart();
         getDeviceLocation();
     }

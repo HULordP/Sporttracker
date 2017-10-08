@@ -105,9 +105,9 @@
             android:parentActivityName=".Result.ResultList.ResultsListActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.olahbence.sporttracker.Result.ResultList.ResultsListActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.Result.ResultList.ResultsListActivity" />
         </activity>
 
         <activity
@@ -116,9 +116,9 @@
             android:parentActivityName=".MainMenu.MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
         </activity>
 
 

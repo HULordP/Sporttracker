@@ -7,8 +7,7 @@ public class ResultRow {
         this.averagePace = averagePace;
     }
 
-    public ResultRow()
-    {
+    public ResultRow() {
 
     }
 

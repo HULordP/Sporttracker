@@ -7,14 +7,14 @@ import android.view.View;
 
 import com.example.olahbence.sporttracker.R;
 
-public class VerifyEmail extends AppCompatActivity{
+public class VerifyEmail extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.verify_email);
     }
 
-    public void toLogin(View view){
+    public void toLogin(View view) {
         finish();
     }
 

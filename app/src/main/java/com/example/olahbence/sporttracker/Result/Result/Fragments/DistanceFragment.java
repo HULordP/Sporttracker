@@ -3,7 +3,6 @@ package com.example.olahbence.sporttracker.Result.Result.Fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import com.example.olahbence.sporttracker.R;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.ArrayList;
 
 public class DistanceFragment extends Fragment {
 
@@ -60,7 +58,7 @@ public class DistanceFragment extends Fragment {
                     if (i == 1) {
                         distance.append(" " + line);
                     }
-                    if(i==2)
+                    if (i == 2)
                         break;
                     i++;
                 }

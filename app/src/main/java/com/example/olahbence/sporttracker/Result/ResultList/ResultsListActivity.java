@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.example.olahbence.sporttracker.R;
@@ -28,7 +28,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +40,29 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ResultsListRow> input;
     private List<Track> trackList;
+    ValueEventListener postListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            Track track = new Track();
+            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                track = childSnapshot.getValue(Track.class);
+                trackList.add(track);
+                Date date = new Date(track.getDate());
+                android.text.format.DateFormat df = new android.text.format.DateFormat();
+                String dateToDisplay = DateFormat.format("yyyy-MM-dd hh:mm a", date).toString();
+                double distanceToUpload = Double.parseDouble(track.getDistance());
+                ResultsListRow current =
+                        new ResultsListRow(dateToDisplay, String.format("%.2f", distanceToUpload) + " km", track.getTime());
+                input.add(current);
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+        }
+    };
     private File downloadedFile;
 
     @Override
@@ -82,7 +104,7 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
 
 
         android.text.format.DateFormat df = new android.text.format.DateFormat();
-        final String toSend = df.format("yyyy-MM-dd hh:mm a", date).toString();
+        final String toSend = DateFormat.format("yyyy-MM-dd hh:mm a", date).toString();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -103,31 +125,6 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
             }
         });
     }
-
-
-    ValueEventListener postListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            Track track = new Track();
-            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                track = childSnapshot.getValue(Track.class);
-                trackList.add(track);
-                Date date = new Date(track.getDate());
-                android.text.format.DateFormat df = new android.text.format.DateFormat();
-                String dateToDisplay = df.format("yyyy-MM-dd hh:mm a", date).toString();
-                double distanceToUpload = Double.parseDouble(track.getDistance());
-                ResultsListRow current =
-                        new ResultsListRow(dateToDisplay, String.format("%.2f", distanceToUpload) + " km", track.getTime());
-                input.add(current);
-                mAdapter.notifyDataSetChanged();
-            }
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-        }
-    };
 
     @Override
     protected void onStop() {

@@ -29,13 +29,6 @@ import java.util.concurrent.TimeUnit;
 
 
 public class ServiceLocation extends Service {
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-    private LocationCallback mLocationCallback;
-    private boolean mLocationPermissionGranted;
-    private LocationRequest mLocationRequest;
-    private Location mLastKnownLocation;
-    private Location mBeforeLastLocation;
-    private long mTimeTime;
     public static final String BR_NEW_LOCATION = "BR_NEW_LOCATION";
     public static final String KEY_LOCATION = "KEY_LOCATION";
     public static final String BR_NEW_DISTANCE = "BR_NEW_DISTANCE";
@@ -44,13 +37,43 @@ public class ServiceLocation extends Service {
     public static final String KEY_AVERAGE_PACE = "KEY_AVERAGE_PACE";
     public static final String BR_NEW_LAT_LONG = "BR_NEW_LAT_LONG";
     public static final String KEY_LAT_LONG = "KEY_LAT_LONG";
+    private final int NOTIF_FOREGROUND_ID = 101;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private LocationCallback mLocationCallback;
+    private boolean mLocationPermissionGranted;
+    private LocationRequest mLocationRequest;
+    private Location mLastKnownLocation;
+    private Location mBeforeLastLocation;
+    private long mTimeTime;
     private float f1 = 0;
     private int i1 = 1;
     private long f2;
     private File mLocations;
     private File mAveragePaces;
     private long averagePace;
-    private final int NOTIF_FOREGROUND_ID = 101;
+    private BroadcastReceiver mTimeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            mTimeTime = intent.getLongExtra(ServiceTime.KEY_TIME, 0);
+
+            long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
+            String toDisplay = TimeUnit.SECONDS.toMinutes(timeSecond) + " : " + timeSecond % 60 + "s";
+            updateNotification("Distance: " + f1 / 1000 + " km" + "   " +
+                    "Time: " + toDisplay);
+        }
+    };
+    private BroadcastReceiver mRestartReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean restart = intent.getBooleanExtra(TrackingActivity.KEY_RESTART, false);
+            if (restart) {
+                Intent i = new Intent(BR_NEW_AVERAGE_PACE);
+                i.putExtra(KEY_AVERAGE_PACE, averagePace);
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+
+            }
+        }
+    };
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -210,32 +233,6 @@ public class ServiceLocation extends Service {
         }
     }
 
-
-    private BroadcastReceiver mTimeReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mTimeTime = intent.getLongExtra(ServiceTime.KEY_TIME, 0);
-
-            long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
-            String toDisplay = TimeUnit.SECONDS.toMinutes(timeSecond) + " : " + timeSecond % 60 + "s";
-            updateNotification("Distance: " + f1/1000 + " km" + "   " +
-                    "Time: "+ toDisplay);
-        }
-    };
-
-    private BroadcastReceiver mRestartReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean restart = intent.getBooleanExtra(TrackingActivity.KEY_RESTART, false);
-            if(restart){
-                Intent i = new Intent(BR_NEW_AVERAGE_PACE);
-                i.putExtra(KEY_AVERAGE_PACE, averagePace);
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
-
-            }
-        }
-    };
-
     private Notification getMyNotification(String text) {
         Intent notificationIntent = new Intent(this, TrackingActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -249,15 +246,14 @@ public class ServiceLocation extends Service {
                 .setContentText(text)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(contentIntent).build();
-        return  notification;
+        return notification;
     }
-
 
 
     private void updateNotification(String text) {
         Notification notification = getMyNotification(text);
         NotificationManager notifMan = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notifMan.notify(NOTIF_FOREGROUND_ID,notification);
+        notifMan.notify(NOTIF_FOREGROUND_ID, notification);
     }
 
     @Override

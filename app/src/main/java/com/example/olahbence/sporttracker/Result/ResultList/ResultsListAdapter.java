@@ -1,7 +1,5 @@
 package com.example.olahbence.sporttracker.Result.ResultList;
 
-import java.util.List;
-
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,29 +8,15 @@ import android.widget.TextView;
 
 import com.example.olahbence.sporttracker.R;
 
+import java.util.List;
+
 public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.ViewHolder> {
     private List<ResultsListRow> values;
     private OnItemClicked onClick;
 
-    public interface OnItemClicked {
-        void onItemClick(int position);
-    }
-
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtDate;
-        public TextView txtTime;
-        public TextView txtDistance;
-        public View layout;
-
-        public ViewHolder(View v) {
-            super(v);
-            layout = v;
-            txtDate = (TextView) v.findViewById(R.id.item_date);
-            txtTime = (TextView) v.findViewById(R.id.item_time);
-            txtDistance = (TextView) v.findViewById(R.id.item_distance);
-
-        }
+    public ResultsListAdapter(List<ResultsListRow> myDataset, OnItemClicked click) {
+        values = myDataset;
+        onClick = click;
     }
 
     public void add(int position, ResultsListRow item) {
@@ -43,11 +27,6 @@ public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.
     public void remove(int position) {
         values.remove(position);
         notifyItemRemoved(position);
-    }
-
-    public ResultsListAdapter(List<ResultsListRow> myDataset, OnItemClicked click) {
-        values = myDataset;
-        onClick = click;
     }
 
     @Override
@@ -79,6 +58,26 @@ public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.
     @Override
     public int getItemCount() {
         return values.size();
+    }
+
+    public interface OnItemClicked {
+        void onItemClick(int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView txtDate;
+        public TextView txtTime;
+        public TextView txtDistance;
+        public View layout;
+
+        public ViewHolder(View v) {
+            super(v);
+            layout = v;
+            txtDate = (TextView) v.findViewById(R.id.item_date);
+            txtTime = (TextView) v.findViewById(R.id.item_time);
+            txtDistance = (TextView) v.findViewById(R.id.item_distance);
+
+        }
     }
 
 }

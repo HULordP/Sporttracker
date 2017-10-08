@@ -14,6 +14,20 @@ public class ServiceTime extends Service {
     public static final String KEY_TIME = "KEY_TIME";
     long startTime = SystemClock.elapsedRealtime();
     private Handler timerHandler;
+    private Runnable timerRunnable = new Runnable() {
+
+        @Override
+        public void run() {
+            try {
+                long millis = SystemClock.elapsedRealtime() - startTime;
+                Intent intent = new Intent(BR_NEW_TIME);
+                intent.putExtra(KEY_TIME, millis);
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+            } finally {
+                timerHandler.postDelayed(this, 1000);
+            }
+        }
+    };
 
     public ServiceTime() {
     }
@@ -32,23 +46,6 @@ public class ServiceTime extends Service {
 
         return START_STICKY;
     }
-
-
-
-    private Runnable timerRunnable = new Runnable() {
-
-        @Override
-        public void run() {
-            try {
-                long millis = SystemClock.elapsedRealtime() - startTime;
-                Intent intent = new Intent(BR_NEW_TIME);
-                intent.putExtra(KEY_TIME, millis);
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-            } finally {
-                timerHandler.postDelayed(this, 1000);
-            }
-        }
-    };
 
     @Override
     public void onDestroy() {

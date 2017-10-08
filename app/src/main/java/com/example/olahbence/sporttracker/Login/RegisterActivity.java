@@ -22,9 +22,9 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private static final String TAG = "MainActivity";
     private EditText mEmail;
     private EditText mPassword;
     private EditText mUsername;
@@ -97,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-                            Intent i = new Intent(RegisterActivity.this,VerifyEmail.class);
+                            Intent i = new Intent(RegisterActivity.this, VerifyEmail.class);
                             startActivity(i);
                         } else {
                             // If sign in fails, display a message to the user.

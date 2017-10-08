@@ -32,22 +32,22 @@
             android:id="@+id/btn_stop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:onClick="focus"
-            android:text="@string/focus"
             android:layout_alignTop="@+id/mapTracking"
+            android:layout_gravity="center"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="16dp"
             android:layout_toEndOf="@+id/mapTracking"
-            android:layout_marginStart="22dp" />
+            android:onClick="focus"
+            android:text="@string/focus" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/save"
-            android:onClick="toSave"
-            android:layout_below="@+id/btn_stop"
             android:layout_alignStart="@+id/btn_stop"
-            android:layout_marginTop="35dp" />
+            android:layout_below="@+id/btn_stop"
+            android:layout_marginTop="35dp"
+            android:onClick="toSave"
+            android:text="@string/save" />
 
 
     </RelativeLayout>

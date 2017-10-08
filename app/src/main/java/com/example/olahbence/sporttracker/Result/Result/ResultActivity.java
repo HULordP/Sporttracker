@@ -1,23 +1,16 @@
 package com.example.olahbence.sporttracker.Result.Result;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Result.Result.FragmentAdapter.FragmentAdapter;
-import com.example.olahbence.sporttracker.Result.Result.Fragments.DistanceFragment;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.text.DateFormat;
 
 public class ResultActivity extends AppCompatActivity {
 
