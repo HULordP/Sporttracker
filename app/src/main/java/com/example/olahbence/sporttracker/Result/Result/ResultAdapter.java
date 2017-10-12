@@ -28,12 +28,12 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent,
-                                         int viewType) {
+    public ResultAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                       int viewType) {
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         View v =
-                inflater.inflate(R.layout.resultlist_item, parent, false);
+                inflater.inflate(R.layout.result_item, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
@@ -41,6 +41,7 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final ResultRow resultRow = values.get(position);
+        holder.txtNumber.setText(resultRow.getNumber());
         holder.txtAveragePace.setText(resultRow.getAveragePace());
     }
 
@@ -51,13 +52,14 @@ public class ResultAdapter extends RecyclerView.Adapter<ResultAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView txtAveragePace;
+        public TextView txtNumber;
         public View layout;
 
         public ViewHolder(View v) {
             super(v);
             layout = v;
+            txtNumber = (TextView) v.findViewById(R.id.item_number);
             txtAveragePace = (TextView) v.findViewById(R.id.item_avaragepace);
-
         }
     }
 

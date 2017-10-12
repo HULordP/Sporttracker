@@ -40,7 +40,6 @@ public class AveragePacesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        input = new ArrayList<>();
     }
 
     @Override
@@ -57,10 +56,10 @@ public class AveragePacesFragment extends Fragment {
 
     private void bindPaces(View root) {
         mRecyclerView = (RecyclerView) root.findViewById(R.id.avarage_pace_list);
-
-        mLayoutManager = new LinearLayoutManager(getContext());
+        mLayoutManager = new LinearLayoutManager(this.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-
+        input = new ArrayList<>();
+        mAdapter = new ResultAdapter(input);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -79,24 +78,20 @@ public class AveragePacesFragment extends Fragment {
             int i = 0;
             try {
                 while ((line = bufferedReader.readLine()) != null) {
-                    if (i == 0) {
-                        i++;
-                    }
-                    if (i == 1) {
-                        i++;
-                    }
                     if (i == 2) {
                         String[] averagePace = line.split(",");
                         int size = averagePace.length;
                         for (int ii = 0; ii < size; ii++) {
-                            ResultRow resultRow = new ResultRow(line);
+                            ResultRow resultRow = new ResultRow(averagePace[ii]);
+                            resultRow.setNumber(Integer.toString(ii + 1) + ". km");
                             input.add(resultRow);
-                            mAdapter = new ResultAdapter(input);
                             mAdapter.notifyDataSetChanged();
                         }
-                        i++;
 
                     }
+                    i++;
+                    if (i > 2)
+                        break;
                 }
             } catch (Exception e) {
                 e.printStackTrace();

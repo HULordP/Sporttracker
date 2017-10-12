@@ -1,6 +1,7 @@
 package com.example.olahbence.sporttracker.Login;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,6 +16,8 @@ public class VerifyEmail extends AppCompatActivity {
     }
 
     public void toLogin(View view) {
+        Intent i = new Intent(VerifyEmail.this, LoginActivity.class);
+        startActivity(i);
         finish();
     }
 

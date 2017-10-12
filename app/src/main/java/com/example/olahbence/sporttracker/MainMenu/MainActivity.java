@@ -2,6 +2,8 @@ package com.example.olahbence.sporttracker.MainMenu;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
 import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationManager;
@@ -9,15 +11,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.olahbence.sporttracker.Login.LoginActivity;
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Result.ResultList.ResultsListActivity;
 import com.example.olahbence.sporttracker.Tracking.TrackingActivity;
@@ -35,6 +43,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
@@ -59,6 +68,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String mSatelliteFix;
     private LocationManager locManager;
     private boolean b2 = true;
+    private String[] mPlanetTitles;
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
 
 
     @Override
@@ -72,6 +85,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Main menu");
+        mPlanetTitles = getResources().getStringArray(R.array.navigation_drawer);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, mPlanetTitles));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                R.string.drawer_open,
+                R.string.drawer_close
+        );
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(),
+                R.drawable.ic_view_headline_black_24dp, this.getTheme());
+        mDrawerToggle.setHomeAsUpIndicator(drawable);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
         gpsFix = (TextView) findViewById(R.id.gps_fixed);
         satellite = (TextView) findViewById(R.id.satellite_in_view);
         satellite2 = (TextView) findViewById(R.id.satellite_fixed);
@@ -153,27 +183,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onRestart() {
         super.onRestart();
         getDeviceLocation();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
-                return true;
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
     }
 
     @Override
@@ -286,8 +295,59 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void toResult(View view) {
+    public void toResult() {
         Intent i = new Intent(MainActivity.this, ResultsListActivity.class);
         startActivity(i);
+    }
+
+    public void toLogin() {
+        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(i);
+        finish();
+    }
+
+    private void selectItem(int position) {
+        if (position == 0)
+            toResult();
+        if (position == 1) {
+            FirebaseAuth.getInstance().signOut();
+            toLogin();
+        }
+        mDrawerList.setItemChecked(position, true);
+        setTitle(mPlanetTitles[position]);
+        mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
     }
 }

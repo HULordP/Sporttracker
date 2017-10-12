@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.olahbence.sporttracker.MainMenu.MainActivity;
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Tracking.Database.Track;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -232,8 +231,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent i = new Intent(this, MainActivity.class);
-                Intent ii = new Intent(getApplicationContext(), ServiceLocation.class);
+                Intent i = new Intent(getApplicationContext(), ServiceLocation.class);
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(
                         mLocationReceiver);
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(
@@ -244,7 +242,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                         mTimeReceiver);
                 LocalBroadcastManager.getInstance(this).unregisterReceiver(
                         mLatLongReceiver);
-                stopService(ii);
+                stopService(i);
                 File averagePaces;
                 String filename = "Average_Paces";
                 String filePath = getApplicationContext().getFilesDir().getPath() + File.separator + filename + ".txt";
@@ -255,7 +253,6 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                 mLocations = new File(filePath);
 
                 delete = mLocations.delete();
-                startActivity(i);
                 finish();
                 return (true);
         }

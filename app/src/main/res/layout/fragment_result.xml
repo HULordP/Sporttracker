@@ -6,12 +6,17 @@
     android:orientation="vertical"
     tools:context="com.example.olahbence.sporttracker.Tracking.TrackingActivity">
 
-    <fragment
-        android:id="@+id/mapTracking"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_margin="12dp" />
+        android:layout_margin="12dp">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapResult"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

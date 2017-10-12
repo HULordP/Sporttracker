@@ -121,6 +121,16 @@
                 android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
         </activity>
 
+        <activity
+            android:name=".Result.ResultList.Loading"
+            android:label="@string/loading"
+            android:parentActivityName=".Result.ResultList.ResultsListActivity"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.Result.ResultList.ResultsListActivity" />
+        </activity>
+
 
     </application>
 

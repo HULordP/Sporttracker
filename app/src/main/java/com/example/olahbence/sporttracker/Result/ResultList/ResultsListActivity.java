@@ -36,7 +36,7 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
 
     public String TAG;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private ResultsListAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ResultsListRow> input;
     private List<Track> trackList;
@@ -98,6 +98,8 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
 
     @Override
     public void onItemClick(int position) {
+        Intent ii = new Intent(ResultsListActivity.this, Loading.class);
+        startActivity(ii);
         Track track = trackList.get(position);
         String filename = track.getFilename();
         Date date = new Date(track.getDate());

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="navigation_drawer">
+        <item name="Results">Results</item>
+        <item name="Logout">Log out</item>
+    </string-array>
+</resources>

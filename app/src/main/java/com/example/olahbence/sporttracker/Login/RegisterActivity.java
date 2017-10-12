@@ -97,12 +97,15 @@ public class RegisterActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
+//                            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+//                            DatabaseReference myRef = mDatabase.getReference("Tracks");
+//                            myRef.setValue(user.getUid());
                             Intent i = new Intent(RegisterActivity.this, VerifyEmail.class);
                             startActivity(i);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                            Toast.makeText(RegisterActivity.this, "Registration failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
