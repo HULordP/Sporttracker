@@ -28,7 +28,7 @@
     <string name="understand">Understand</string>
     <string name="time">Time:</string>
     <string name="distance">Distance:</string>
-    <string name="avarage_pace">Average pace (last km):</string>
+    <string name="avarage_pace">Average pace:</string>
     <string name="current_pace">Current pace:</string>
     <string name="skip">Skip</string>
     <string name="focus">Focus</string>

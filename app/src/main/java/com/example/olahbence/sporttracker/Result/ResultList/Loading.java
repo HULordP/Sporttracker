@@ -13,4 +13,9 @@ public class Loading extends AppCompatActivity {
         setContentView(R.layout.loading);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
 }

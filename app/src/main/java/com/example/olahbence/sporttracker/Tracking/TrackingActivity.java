@@ -87,7 +87,8 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
             if (mBeforeLastLocation != null) {
                 if (map) {
-                    LatLng currentLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                    LatLng currentLocation = new LatLng(mLastKnownLocation.getLatitude(),
+                            mLastKnownLocation.getLongitude());
                     if (focus) {
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 currentLocation, DEFAULT_ZOOM));
@@ -170,11 +171,13 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
             long l1 = intent.getLongExtra(ServiceLocation.KEY_AVERAGE_PACE, 0);
             aux2 = getString(R.string.avarage_pace);
             if (l1 != 0) {
-                toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(l1) + " : " + l1 % 60 + " min/km";
+                toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(l1)
+                        + " : " + l1 % 60 + " min/km";
                 mAveragePace.setText(toDisplay);
                 averagePace = l1;
             } else {
-                toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(averagePace) + " : " + averagePace % 60 + " min/km";
+                toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(averagePace)
+                        + " : " + averagePace % 60 + " min/km";
                 mAveragePace.setText(toDisplay);
             }
         }
@@ -189,7 +192,8 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
             long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
             aux2 = getString(R.string.time);
-            toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(timeSecond) + " : " + timeSecond % 60 + "s";
+            toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(timeSecond) + " : "
+                    + timeSecond % 60 + "s";
             mTime.setText(toDisplay);
         }
     };
@@ -245,11 +249,13 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                 stopService(i);
                 File averagePaces;
                 String filename = "Average_Paces";
-                String filePath = getApplicationContext().getFilesDir().getPath() + File.separator + filename + ".txt";
+                String filePath = getApplicationContext().getFilesDir().getPath()
+                        + File.separator + filename + ".txt";
                 averagePaces = new File(filePath);
                 boolean delete = averagePaces.delete();
                 filename = "Locations_LatLong";
-                filePath = getApplicationContext().getFilesDir().getPath() + File.separator + filename + ".txt";
+                filePath = getApplicationContext().getFilesDir().getPath()
+                        + File.separator + filename + ".txt";
                 mLocations = new File(filePath);
 
                 delete = mLocations.delete();
@@ -278,6 +284,9 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mLatLongReceiver,
                 new IntentFilter(ServiceLocation.BR_NEW_LAT_LONG));
+        Intent intent = new Intent(BR_NEW_RESTART);
+        intent.putExtra(KEY_RESTART, true);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     @Override
@@ -302,6 +311,36 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         Intent intent = new Intent(BR_NEW_RESTART);
         intent.putExtra(KEY_RESTART, true);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent i = new Intent(getApplicationContext(), ServiceLocation.class);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                mLocationReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                mDistanceReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                mAveragePaceReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                mTimeReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                mLatLongReceiver);
+        stopService(i);
+        File averagePaces;
+        String filename = "Average_Paces";
+        String filePath = getApplicationContext().getFilesDir().getPath()
+                + File.separator + filename + ".txt";
+        averagePaces = new File(filePath);
+        boolean delete = averagePaces.delete();
+        filename = "Locations_LatLong";
+        filePath = getApplicationContext().getFilesDir().getPath()
+                + File.separator + filename + ".txt";
+        mLocations = new File(filePath);
+
+        delete = mLocations.delete();
+        finish();
     }
 
     @Override

@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
@@ -67,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String mSatellite;
     private String mSatelliteFix;
     private LocationManager locManager;
-    private boolean b2 = true;
     private String[] mPlanetTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -86,10 +86,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Main menu");
         mPlanetTitles = getResources().getStringArray(R.array.navigation_drawer);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        mPlanetTitles[0] = user.getDisplayName();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
+                mPlanetTitles));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,
@@ -111,9 +114,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String aux = getString(R.string.gps_fixed);
         toDisplay = aux + " no";
         gpsFix.setText(toDisplay);
-        toDisplay = mSatellite + "\n" + "0";
+        toDisplay = mSatellite + "0";
         satellite.setText(toDisplay);
-        toDisplay = mSatelliteFix + "\n" + "0";
+        toDisplay = mSatelliteFix + "0";
         satellite2.setText(toDisplay);
 
         mLocationCallback = new LocationCallback() {
@@ -141,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onSatelliteStatusChanged(GnssStatus status) {
                 super.onSatelliteStatusChanged(status);
                 satelliteCount = status.getSatelliteCount();
-                String toDisplay = mSatellite + "\n" + satelliteCount;
+                String toDisplay = mSatellite + " " + satelliteCount;
                 satellite.setText(toDisplay);
                 fixSatelliteCount = 0;
                 int i = 0;
@@ -152,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     i++;
                 }
 
-                toDisplay = mSatelliteFix + "\n" + fixSatelliteCount;
+                toDisplay = mSatelliteFix + " " + fixSatelliteCount;
                 satellite2.setText(toDisplay);
             }
         };
@@ -173,11 +176,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStop() {
         super.onStop();
-        if (b2) {
-            mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
-        }
+        mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+    }
 
     @Override
     protected void onRestart() {
@@ -261,14 +267,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void currentData(View view) {
-        b2 = false;
         mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
         Intent i = new Intent(MainActivity.this, CurrentData.class);
         startActivity(i);
     }
 
     public void startTrack(View view) {
-        b2 = false;
         mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
         Intent i = new Intent(MainActivity.this, TrackingActivity.class);
         startActivity(i);
@@ -307,9 +311,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void selectItem(int position) {
-        if (position == 0)
+        if (position == 1)
             toResult();
-        if (position == 1) {
+        if (position == 3) {
             FirebaseAuth.getInstance().signOut();
             toLogin();
         }

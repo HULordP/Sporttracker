@@ -33,11 +33,11 @@
         <activity
             android:name=".MainMenu.MainActivity"
             android:label="@string/title_activity_maps"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".Login.LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,7 +48,7 @@
             android:name=".MainMenu.BigMapsActivity"
             android:label="@string/title_activity_big_maps"
             android:parentActivityName=".MainMenu.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
@@ -57,7 +57,7 @@
             android:name=".MainMenu.CurrentData"
             android:label="@string/current_data"
             android:parentActivityName=".MainMenu.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
@@ -66,7 +66,7 @@
             android:name=".Login.RegisterActivity"
             android:label="@string/title_activity_register"
             android:parentActivityName=".Login.LoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.Login.LoginActivity" />
@@ -83,8 +83,9 @@
         <activity
             android:name=".Tracking.TrackingActivity"
             android:label="@string/tracking_activity"
+            android:launchMode="singleInstance"
             android:parentActivityName=".MainMenu.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
@@ -103,7 +104,7 @@
             android:name=".Result.Result.ResultActivity"
             android:label="@string/title_activity_result"
             android:parentActivityName=".Result.ResultList.ResultsListActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/AppTheme">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -114,7 +115,7 @@
             android:name=".Result.ResultList.ResultsListActivity"
             android:label="@string/title_activity_results_list"
             android:parentActivityName=".MainMenu.MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/AppTheme">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

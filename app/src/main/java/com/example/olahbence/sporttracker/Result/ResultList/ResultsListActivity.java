@@ -114,7 +114,8 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
 
         String filePath = getApplicationContext().getFilesDir().getPath() + File.separator + "track.txt";
         downloadedFile = new File(filePath);
-        trackTxtRef.getFile(downloadedFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+        trackTxtRef.getFile(downloadedFile).addOnSuccessListener
+                (new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                 Intent i = new Intent(ResultsListActivity.this, ResultActivity.class);

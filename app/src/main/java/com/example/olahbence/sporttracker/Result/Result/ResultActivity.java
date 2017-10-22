@@ -44,7 +44,6 @@ public class ResultActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
         String filePath = getApplicationContext().getFilesDir().getPath() + File.separator + "track.txt";
         File toDelete = new File(filePath);
         boolean b = toDelete.delete();

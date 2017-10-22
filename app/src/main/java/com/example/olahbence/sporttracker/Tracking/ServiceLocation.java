@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.IBinder;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -26,6 +27,8 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.concurrent.TimeUnit;
+
+import static android.app.Notification.VISIBILITY_PUBLIC;
 
 
 public class ServiceLocation extends Service {
@@ -103,9 +106,11 @@ public class ServiceLocation extends Service {
                     intent.putExtra(KEY_LOCATION, location);
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
-                    String LatLong_String = mLastKnownLocation.getLatitude() + "," + mLastKnownLocation.getLongitude() + "\n";
+                    String LatLong_String = mLastKnownLocation.getLatitude()
+                            + "," + mLastKnownLocation.getLongitude() + "\n";
                     String filename = "Locations_LatLong";
-                    String filePath = getApplicationContext().getFilesDir().getPath() + File.separator + filename + ".txt";
+                    String filePath = getApplicationContext().getFilesDir().getPath()
+                            + File.separator + filename + ".txt";
                     mLocations = new File(filePath);
                     if (!mLocations.exists()) {
                         try {
@@ -119,7 +124,8 @@ public class ServiceLocation extends Service {
                         mFileWriter.write(LatLong_String);
                         mFileWriter.close();
                         Intent intent3 = new Intent(BR_NEW_LAT_LONG);
-                        LatLng toSend = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                        LatLng toSend = new LatLng(mLastKnownLocation.getLatitude(),
+                                mLastKnownLocation.getLongitude());
                         intent3.putExtra(KEY_LAT_LONG, toSend);
                         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent3);
                     } catch (Exception e) {
@@ -136,7 +142,8 @@ public class ServiceLocation extends Service {
 
                     String average_pace;
                     filename = "Average_Paces";
-                    filePath = getApplicationContext().getFilesDir().getPath() + File.separator + filename + ".txt";
+                    filePath = getApplicationContext().getFilesDir().getPath()
+                            + File.separator + filename + ".txt";
                     mAveragePaces = new File(filePath);
 
 
@@ -152,7 +159,8 @@ public class ServiceLocation extends Service {
                         if (i1 == 1) {
                             long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
                             Intent intent4 = new Intent(BR_NEW_AVERAGE_PACE);
-                            average_pace = TimeUnit.SECONDS.toMinutes(timeSecond) + ":" + timeSecond % 60 + "\n";
+                            average_pace = TimeUnit.SECONDS.toMinutes(timeSecond)
+                                    + ":" + timeSecond % 60 + "\n";
                             intent4.putExtra(KEY_AVERAGE_PACE, timeSecond);
                             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent4);
                             averagePace = timeSecond;
@@ -169,7 +177,8 @@ public class ServiceLocation extends Service {
                             long f3 = mTimeTime - f2;
                             long timeSecond = TimeUnit.MILLISECONDS.toSeconds(f3);
                             Intent intent4 = new Intent(BR_NEW_AVERAGE_PACE);
-                            average_pace = TimeUnit.SECONDS.toMinutes(timeSecond) + ":" + timeSecond % 60 + "\n";
+                            average_pace = TimeUnit.SECONDS.toMinutes(timeSecond)
+                                    + ":" + timeSecond % 60 + "\n";
                             intent4.putExtra(KEY_AVERAGE_PACE, timeSecond);
                             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent4);
                             averagePace = timeSecond;
@@ -234,18 +243,26 @@ public class ServiceLocation extends Service {
     }
 
     private Notification getMyNotification(String text) {
-        Intent notificationIntent = new Intent(this, TrackingActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(this,
-                NOTIF_FOREGROUND_ID,
-                notificationIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT);
+        Intent intent = new Intent(this, TrackingActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(NOTIF_FOREGROUND_ID);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(TrackingActivity.class);
+
+        stackBuilder.addNextIntent(intent);
+
+        PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         Notification notification = new Notification.Builder(this)
                 .setContentTitle("Sport tracker")
                 .setContentText(text)
+                .setVisibility(VISIBILITY_PUBLIC)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentIntent(contentIntent).build();
+                .setContentIntent(pendingIntent).build();
+
         return notification;
     }
 
@@ -254,6 +271,11 @@ public class ServiceLocation extends Service {
         Notification notification = getMyNotification(text);
         NotificationManager notifMan = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notifMan.notify(NOTIF_FOREGROUND_ID, notification);
+    }
+
+    private void cancelNotification() {
+        NotificationManager notifMan = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notifMan.cancelAll();
     }
 
     @Override
@@ -265,6 +287,7 @@ public class ServiceLocation extends Service {
         Intent i = new Intent(getApplicationContext(), ServiceTime.class);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(
                 mTimeReceiver);
+        cancelNotification();
         stopService(i);
     }
 
