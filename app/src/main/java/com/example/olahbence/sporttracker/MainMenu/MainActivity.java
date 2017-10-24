@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.olahbence.sporttracker.Friends.FriendsActivity;
 import com.example.olahbence.sporttracker.Login.LoginActivity;
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Result.ResultList.ResultsListActivity;
@@ -313,6 +314,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void selectItem(int position) {
         if (position == 1)
             toResult();
+        if (position == 2)
+            toFriends();
         if (position == 3) {
             FirebaseAuth.getInstance().signOut();
             toLogin();
@@ -320,6 +323,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawerList.setItemChecked(position, true);
         setTitle(mPlanetTitles[position]);
         mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    private void toFriends() {
+        Intent i = new Intent(MainActivity.this, FriendsActivity.class);
+        startActivity(i);
     }
 
     @Override

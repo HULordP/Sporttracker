@@ -40,7 +40,7 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ResultsListRow> input;
     private List<Track> trackList;
-    ValueEventListener postListener = new ValueEventListener() {
+    private ValueEventListener postListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             Track track = new Track();

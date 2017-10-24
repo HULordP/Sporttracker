@@ -63,10 +63,7 @@ public class CurrentData extends AppCompatActivity {
             }
         };
         getDeviceLocation();
-        // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
-
-        // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
     }
 

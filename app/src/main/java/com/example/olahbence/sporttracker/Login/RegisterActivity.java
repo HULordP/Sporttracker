@@ -18,6 +18,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -38,10 +40,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
-                    // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
             }
@@ -52,10 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
         mUsername = (EditText) findViewById(R.id.username_register);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
-
-        // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
     }
 
@@ -81,13 +78,16 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             String userName = mUsername.getText().toString();
                             user.updateProfile(
                                     new UserProfileChangeRequest.Builder().
                                             setDisplayName(userName).build());
+                            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef = mDatabase.getReference("Users");
+                            myRef.child(user.getUid()).child("email").setValue(user.getEmail());
+                            myRef.child(user.getUid()).child("name").setValue(user.getDisplayName());
                             user.sendEmailVerification()
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
@@ -97,13 +97,9 @@ public class RegisterActivity extends AppCompatActivity {
                                             }
                                         }
                                     });
-//                            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-//                            DatabaseReference myRef = mDatabase.getReference("Tracks");
-//                            myRef.setValue(user.getUid());
                             Intent i = new Intent(RegisterActivity.this, VerifyEmail.class);
                             startActivity(i);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(RegisterActivity.this, "Registration failed.",
                                     Toast.LENGTH_SHORT).show();

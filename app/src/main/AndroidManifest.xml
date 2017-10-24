@@ -92,11 +92,11 @@
         </activity>
 
         <service
-            android:name=".Tracking.ServiceLocation"
+            android:name=".Tracking.Services.ServiceLocation"
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name=".Tracking.ServiceTime"
+            android:name=".Tracking.Services.ServiceTime"
             android:enabled="true"
             android:exported="true" />
 
@@ -105,23 +105,19 @@
             android:label="@string/title_activity_result"
             android:parentActivityName=".Result.ResultList.ResultsListActivity"
             android:theme="@style/AppTheme">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.Result.ResultList.ResultsListActivity" />
         </activity>
-
         <activity
             android:name=".Result.ResultList.ResultsListActivity"
             android:label="@string/title_activity_results_list"
             android:parentActivityName=".MainMenu.MainActivity"
             android:theme="@style/AppTheme">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
         </activity>
-
         <activity
             android:name=".Result.ResultList.Loading"
             android:label="@string/loading"
@@ -131,8 +127,33 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.Result.ResultList.ResultsListActivity" />
         </activity>
-
-
+        <activity
+            android:name=".Friends.Search.SearchFriends"
+            android:label="@string/search"
+            android:parentActivityName=".Friends.FriendsActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.Friends.FriendsActivity" />
+        </activity>
+        <activity
+            android:name=".Friends.FriendsActivities"
+            android:label="@string/friends_activities"
+            android:parentActivityName=".Friends.FriendsActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.Friends.FriendsActivity" />
+        </activity>
+        <activity
+            android:name=".Friends.FriendsActivity"
+            android:label="@string/friends"
+            android:parentActivityName=".MainMenu.MainActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.olahbence.sporttracker.Tracking;
+package com.example.olahbence.sporttracker.Tracking.Services;
 
 import android.app.Service;
 import android.content.Intent;

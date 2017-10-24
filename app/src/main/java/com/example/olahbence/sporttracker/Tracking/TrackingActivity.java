@@ -20,6 +20,8 @@ import android.widget.Toast;
 
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Tracking.Database.Track;
+import com.example.olahbence.sporttracker.Tracking.Services.ServiceLocation;
+import com.example.olahbence.sporttracker.Tracking.Services.ServiceTime;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -496,21 +498,21 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                 System.out.println("Upload is " + progress + "% done");
+                //TODO dialog ablak
             }
         }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
                 System.out.println("Upload is paused");
+                //TODO dialog ablak
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
                 Toast.makeText(TrackingActivity.this, "Your upload is finished!", Toast.LENGTH_SHORT).show();
             }
         });

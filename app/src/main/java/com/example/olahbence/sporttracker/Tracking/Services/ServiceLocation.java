@@ -1,4 +1,4 @@
-package com.example.olahbence.sporttracker.Tracking;
+package com.example.olahbence.sporttracker.Tracking.Services;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -17,6 +17,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.olahbence.sporttracker.R;
+import com.example.olahbence.sporttracker.Tracking.TrackingActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
