@@ -29,6 +29,12 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="toMyFriends"
+            android:text="@string/my_friends" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="toFriendsActivities"
             android:text="@string/friends_activities" />
     </LinearLayout>

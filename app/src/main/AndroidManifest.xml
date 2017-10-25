@@ -137,7 +137,7 @@
                 android:value="com.example.olahbence.sporttracker.Friends.FriendsActivity" />
         </activity>
         <activity
-            android:name=".Friends.FriendsActivities"
+            android:name=".Friends.Activities.FriendsActivities"
             android:label="@string/friends_activities"
             android:parentActivityName=".Friends.FriendsActivity"
             android:theme="@style/AppTheme">
@@ -153,6 +153,16 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Friends.Search.AddFriends"
+            android:label="@string/add"
+            android:parentActivityName=".Friends.Search.SearchFriends"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.Friends.Search.SearchFriends" />
+
         </activity>
     </application>
 

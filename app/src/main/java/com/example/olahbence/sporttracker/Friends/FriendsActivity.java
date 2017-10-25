@@ -30,4 +30,7 @@ public class FriendsActivity extends AppCompatActivity {
 
     public void toFriendsActivities(View view) {
     }
+
+    public void toMyFriends(View view) {
+    }
 }

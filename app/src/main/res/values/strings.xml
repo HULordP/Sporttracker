@@ -47,4 +47,8 @@
     <string name="search">Search</string>
     <string name="friends_activities">Friends activities</string>
     <string name="friends">Friends</string>
+    <string name="add">Add friend</string>
+    <string name="do_you_want_to_add">Do you want to add</string>
+    <string name="cancel">Cancel</string>
+    <string name="my_friends">My friends</string>
 </resources>

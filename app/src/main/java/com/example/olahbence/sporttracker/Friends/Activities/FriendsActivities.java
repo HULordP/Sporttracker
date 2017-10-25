@@ -1,4 +1,4 @@
-package com.example.olahbence.sporttracker.Friends;
+package com.example.olahbence.sporttracker.Friends.Activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
