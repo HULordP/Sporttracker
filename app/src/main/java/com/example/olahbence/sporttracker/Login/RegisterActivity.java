@@ -87,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
                             DatabaseReference myRef = mDatabase.getReference("Users");
                             myRef.child(user.getUid()).child("email").setValue(user.getEmail());
-                            myRef.child(user.getUid()).child("name").setValue(user.getDisplayName());
+                            myRef.child(user.getUid()).child("name").setValue(userName);
                             user.sendEmailVerification()
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override

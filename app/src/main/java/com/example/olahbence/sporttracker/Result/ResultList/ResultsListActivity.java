@@ -43,9 +43,8 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
     private ValueEventListener postListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            Track track = new Track();
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                track = childSnapshot.getValue(Track.class);
+                Track track = childSnapshot.getValue(Track.class);
                 trackList.add(track);
                 Date date = new Date(track.getDate());
                 android.text.format.DateFormat df = new android.text.format.DateFormat();
@@ -73,8 +72,6 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Results");
         ActionBar ab = getSupportActionBar();
-
-        // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.result_list);

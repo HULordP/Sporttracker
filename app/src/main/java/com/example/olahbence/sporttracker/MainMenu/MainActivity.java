@@ -1,4 +1,5 @@
 package com.example.olahbence.sporttracker.MainMenu;
+//TODO remove ValueEventListeners!!!!!!!!!!!!!!
 
 import android.content.Intent;
 import android.content.pm.PackageManager;

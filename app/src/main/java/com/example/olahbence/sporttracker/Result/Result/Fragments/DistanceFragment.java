@@ -25,9 +25,12 @@ import java.io.FileReader;
 
 public class DistanceFragment extends Fragment implements OnMapReadyCallback {
 
+    boolean b = false;
     private File file;
     private TextView time;
     private TextView distance;
+    private TextView name;
+    private TextView email;
     //    private SupportMapFragment bigMap;
     private GoogleMap mMap;
     private MapView mapView;
@@ -37,6 +40,8 @@ public class DistanceFragment extends Fragment implements OnMapReadyCallback {
     private boolean polyline_added = false;
     private LatLng prev;
     private boolean map = false;
+    private String toEmail;
+    private String toName;
 
     public DistanceFragment() {
         /* Required empty public constructor */
@@ -45,6 +50,12 @@ public class DistanceFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getActivity().getIntent().getExtras();
+        if (extras != null) {
+            toEmail = extras.getString("Email");
+            toName = extras.getString("Name");
+            b = true;
+        }
     }
 
     @Override
@@ -54,6 +65,10 @@ public class DistanceFragment extends Fragment implements OnMapReadyCallback {
 
         time = (TextView) view.findViewById(R.id.time);
         distance = (TextView) view.findViewById(R.id.distance);
+        name = (TextView) view.findViewById(R.id.name);
+        email = (TextView) view.findViewById(R.id.email);
+        name.setVisibility(View.GONE);
+        email.setVisibility(View.GONE);
 
         return view;
     }
@@ -61,6 +76,14 @@ public class DistanceFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        if (b) {
+            email.setText(toEmail);
+            email.setVisibility(View.VISIBLE);
+            name.setText(toName);
+            name.setVisibility(View.VISIBLE);
+        }
 
         mapView = (MapView) view.findViewById(R.id.mapResult);
         mapView.onCreate(savedInstanceState);

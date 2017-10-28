@@ -162,7 +162,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.Friends.Search.SearchFriends" />
-
+        </activity>
+        <activity
+            android:name=".Friends.MyFriends.MyFriends"
+            android:label="@string/my_friends"
+            android:parentActivityName=".Friends.FriendsActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.Friends.FriendsActivity" />
         </activity>
     </application>
 

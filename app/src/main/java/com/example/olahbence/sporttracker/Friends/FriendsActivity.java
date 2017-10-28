@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.example.olahbence.sporttracker.Friends.Activities.FriendsActivities;
+import com.example.olahbence.sporttracker.Friends.MyFriends.MyFriends;
 import com.example.olahbence.sporttracker.Friends.Search.SearchFriends;
 import com.example.olahbence.sporttracker.R;
 
@@ -29,8 +31,12 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     public void toFriendsActivities(View view) {
+        Intent i = new Intent(FriendsActivity.this, FriendsActivities.class);
+        startActivity(i);
     }
 
     public void toMyFriends(View view) {
+        Intent i = new Intent(FriendsActivity.this, MyFriends.class);
+        startActivity(i);
     }
 }

@@ -29,12 +29,15 @@ public class SearchFriends extends AppCompatActivity implements FriendsSearchAda
     private FriendsSearchAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private String search;
+    private List<String> IDs;
     private ChildEventListener postListener = new ChildEventListener() {
+
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             SearchRow searchRow = dataSnapshot.getValue(SearchRow.class);
             input.add(searchRow);
             mAdapter.notifyDataSetChanged();
+            IDs.add(dataSnapshot.getKey());
         }
 
         @Override
@@ -74,6 +77,8 @@ public class SearchFriends extends AppCompatActivity implements FriendsSearchAda
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+
+        IDs = new ArrayList<>();
         input = new ArrayList<>();
         mAdapter = new FriendsSearchAdapter(input, this);
         mRecyclerView.setAdapter(mAdapter);
@@ -95,6 +100,10 @@ public class SearchFriends extends AppCompatActivity implements FriendsSearchAda
         Intent i = new Intent(SearchFriends.this, AddFriends.class);
         String toSend = input.get(position).getEmail();
         i.putExtra("email", toSend);
+        String toSend2 = input.get(position).getName();
+        i.putExtra("name", toSend2);
+        String ID = IDs.get(position);
+        i.putExtra("ID", ID);
         startActivity(i);
     }
 }

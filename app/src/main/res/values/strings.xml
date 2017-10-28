@@ -22,7 +22,7 @@
     <string name="example_example_com">example@example.com</string>
     <string name="your_password">Your password</string>
     <string name="auth_failed">Login failed</string>
-    <string name="your_username">Your email</string>
+    <string name="your_username">Your username</string>
     <string name="title_verify_email">Verify email</string>
     <string name="verification_email">We sent a verification email, you have to verify your email, before your first log in!</string>
     <string name="understand">Understand</string>
@@ -51,4 +51,6 @@
     <string name="do_you_want_to_add">Do you want to add</string>
     <string name="cancel">Cancel</string>
     <string name="my_friends">My friends</string>
+    <string name="add_friend">Add friend</string>
+    <string name="delete_friend">Delete friend</string>
 </resources>
