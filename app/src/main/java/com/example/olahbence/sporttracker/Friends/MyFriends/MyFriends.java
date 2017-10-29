@@ -126,6 +126,9 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         DatabaseReference myRef = mDatabase.getReference("Friends");
         myRef.child(ID).child(IDs.get(position)).removeValue();
         myRef.child(IDs.get(position)).child(ID).removeValue();
+        DatabaseReference myRef2 = mDatabase.getReference("Connections");
+        myRef2.child(ID).child(IDs.get(position)).removeValue();
+        myRef2.child(IDs.get(position)).child(ID).removeValue();
         input.clear();
         mAdapter.notifyDataSetChanged();
     }

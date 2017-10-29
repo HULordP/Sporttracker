@@ -1,4 +1,5 @@
 package com.example.olahbence.sporttracker.Friends.Search;
+//TODO ha mar friends ne lehessen hozzaadni !!!!!!!!!!!!
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
