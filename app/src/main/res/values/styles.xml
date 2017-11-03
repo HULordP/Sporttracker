@@ -1,5 +1,10 @@
 <resources>
 
+    <style name="AppTheme2" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:textViewStyle">@style/DefaultText</item>
+    </style>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:textViewStyle">@style/DefaultText</item>
@@ -10,6 +15,36 @@
         <item name="fontFamily">roboto</item>
         <item name="textWeight">normal</item>
         <item name="textStyle">normal</item>
+    </style>
+
+    <style name="MapText" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="fontFamily">roboto</item>
+        <item name="android:textViewStyle">@style/DefaultText</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/blue_transparent</item>
+    </style>
+
+    <style name="CurrentDataText" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="fontFamily">roboto</item>
+        <item name="textWeight">ultra_bold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/tile_bg</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
+
+    <style name="MapBigButton" parent="Widget.AppCompat.Button">
+        <!-- Attributes of RobotoButton -->
+        <item name="fontFamily">roboto</item>
+        <item name="textWeight">ultra_bold</item>
+        <item name="android:textColor">@color/orange_dark</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@color/blue</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">28sp</item>
     </style>
 
 </resources>

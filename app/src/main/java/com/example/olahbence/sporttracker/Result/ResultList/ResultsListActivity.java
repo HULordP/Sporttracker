@@ -29,6 +29,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ResultsListRow> input;
     private List<Track> trackList;
-    private ValueEventListener postListener = new ValueEventListener() {
+    private ValueEventListener trackListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
@@ -53,8 +54,9 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
                 ResultsListRow current =
                         new ResultsListRow(dateToDisplay, String.format("%.2f", distanceToUpload) + " km", track.getTime());
                 input.add(current);
-                mAdapter.notifyDataSetChanged();
             }
+            Collections.reverse(input);
+            mAdapter.notifyDataSetChanged();
         }
 
         @Override
@@ -89,7 +91,7 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = mAuth.getCurrentUser();
         DatabaseReference myRef = mDatabase.getReference("Tracks").child(fUser.getUid());
-        myRef.addValueEventListener(postListener);
+        myRef.addValueEventListener(trackListener);
 
     }
 
@@ -133,6 +135,6 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = mAuth.getCurrentUser();
         DatabaseReference myRef = mDatabase.getReference("Tracks").child(fUser.getUid());
-        myRef.removeEventListener(postListener);
+        myRef.removeEventListener(trackListener);
     }
 }

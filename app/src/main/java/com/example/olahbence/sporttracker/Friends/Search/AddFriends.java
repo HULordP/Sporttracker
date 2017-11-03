@@ -59,4 +59,10 @@ public class AddFriends extends AppCompatActivity {
     public void Cancel(View view) {
         finish();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        finish();
+    }
 }

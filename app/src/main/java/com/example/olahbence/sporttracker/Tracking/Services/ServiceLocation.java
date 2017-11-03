@@ -247,7 +247,6 @@ public class ServiceLocation extends Service {
         Intent intent = new Intent(this, TrackingActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setFlags(NOTIF_FOREGROUND_ID);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(TrackingActivity.class);
@@ -258,6 +257,7 @@ public class ServiceLocation extends Service {
 
 
         Notification notification = new Notification.Builder(this)
+                .setOngoing(true)
                 .setContentTitle("Sport tracker")
                 .setContentText(text)
                 .setVisibility(VISIBILITY_PUBLIC)

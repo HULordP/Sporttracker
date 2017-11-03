@@ -33,6 +33,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -63,6 +64,8 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
                 input.add(current);
                 if (input.size() > 1)
                     sortActivites(input);
+                Collections.reverse(input);
+                Collections.reverse(trackList);
                 mAdapter.notifyDataSetChanged();
             }
             i++;

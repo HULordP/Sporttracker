@@ -128,26 +128,48 @@ public class CurrentData extends AppCompatActivity {
         double aux;
         String aux2;
         String aux3;
+        String aux4;
+        int index;
         String toDisplay;
 
         aux = mLastKnownLocation.getLatitude();
+        aux4 = Double.toString(aux);
+        if (aux4.length() > 6) {
+            index = aux4.indexOf(".");
+            aux4 = aux4.substring(0, index + 5);
+        }
         aux2 = getString(R.string.latitude);
-        toDisplay = aux2 + "\n" + Double.toString(aux);
+        toDisplay = aux2 + "\n" + aux4;
         mLatitude.setText(toDisplay);
 
         aux = mLastKnownLocation.getLongitude();
+        aux4 = Double.toString(aux);
+        if (aux4.length() > 6) {
+            index = aux4.indexOf(".");
+            aux4 = aux4.substring(0, index + 5);
+        }
         aux2 = getString(R.string.longitude);
-        toDisplay = aux2 + "\n" + Double.toString(aux);
+        toDisplay = aux2 + "\n" + aux4;
         mLongitude.setText(toDisplay);
 
         aux = mLastKnownLocation.getSpeed();
+        aux4 = Double.toString(aux);
+        if (aux4.length() > 6) {
+            index = aux4.indexOf(".");
+            aux4 = aux4.substring(0, index + 5);
+        }
         aux2 = getString(R.string.speed);
-        toDisplay = aux2 + "\n" + Double.toString(aux);
+        toDisplay = aux2 + "\n" + aux4;
         mSpeed.setText(toDisplay);
 
         aux = mLastKnownLocation.getAltitude();
+        aux4 = Double.toString(aux);
+        if (aux4.length() > 6) {
+            index = aux4.indexOf(".");
+            aux4 = aux4.substring(0, index + 5);
+        }
         aux2 = getString(R.string.height);
-        toDisplay = aux2 + "\n" + Double.toString(aux);
+        toDisplay = aux2 + "\n" + aux4;
         mHeight.setText(toDisplay);
 
         aux2 = getString(R.string.position_time);

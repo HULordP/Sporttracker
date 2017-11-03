@@ -88,6 +88,7 @@ public class SearchFriends extends AppCompatActivity implements FriendsSearchAda
         search = mEditText.getText().toString();
 
         input.clear();
+        IDs.clear();
         mAdapter.notifyDataSetChanged();
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();

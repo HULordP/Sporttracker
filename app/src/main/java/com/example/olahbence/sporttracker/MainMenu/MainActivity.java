@@ -1,5 +1,6 @@
 package com.example.olahbence.sporttracker.MainMenu;
 //TODO remove ValueEventListeners!!!!!!!!!!!!!!
+//TODO reverse List
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 R.string.drawer_close
         );
         Drawable drawable = ResourcesCompat.getDrawable(getResources(),
-                R.drawable.ic_view_headline_black_24dp, this.getTheme());
+                R.drawable.ic_view_headline_white_24dp, this.getTheme());
         mDrawerToggle.setHomeAsUpIndicator(drawable);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
