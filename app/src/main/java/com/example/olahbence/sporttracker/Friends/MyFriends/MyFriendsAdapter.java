@@ -48,6 +48,8 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.View
         holder.txtName.setText(resultRow.getName());
         if (resultRow.getConnected().equals("true"))
             holder.btnAdd.setVisibility(View.GONE);
+        else
+            holder.btnAdd.setVisibility(View.VISIBLE);
         holder.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

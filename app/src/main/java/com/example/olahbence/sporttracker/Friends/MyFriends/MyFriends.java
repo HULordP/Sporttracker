@@ -30,7 +30,24 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
     private List<String> IDs;
     private UserDatas myFriend;
     private int aux;
+    private ValueEventListener getFriends = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            input.clear();
+            IDs.clear();
+            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                MyFriendsRow myFriend = childSnapshot.getValue(MyFriendsRow.class);
+                input.add(myFriend);
+                IDs.add(childSnapshot.getKey());
+                mAdapter.notifyDataSetChanged();
+            }
+        }
 
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+        }
+    };
     private ValueEventListener getData = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -44,6 +61,8 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
             myRef.child(ID).child(IDs.get(aux)).child("name").setValue(myFriend.getName());
             myRef.child(IDs.get(aux)).child(ID).child("email").setValue(user.getEmail());
             myRef.child(IDs.get(aux)).child(ID).child("name").setValue(user.getDisplayName());
+            input.clear();
+            loadFriends();
         }
 
         @Override
@@ -51,24 +70,6 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
         }
     };
-
-    private ValueEventListener postListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                MyFriendsRow myFriend = childSnapshot.getValue(MyFriendsRow.class);
-                input.add(myFriend);
-                mAdapter.notifyDataSetChanged();
-                IDs.add(childSnapshot.getKey());
-            }
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-        }
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +100,7 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         String ID = user.getUid();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference myRef = mDatabase.getReference("Friends");
-        myRef.child(ID).addValueEventListener(postListener);
+        myRef.child(ID).addValueEventListener(getFriends);
     }
 
     @Override
@@ -113,8 +114,6 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         myRef.child(ID).child(IDs.get(position)).child("connected").setValue("true");
         DatabaseReference myRef2 = mDatabase.getReference("Users");
         myRef2.child(IDs.get(position)).addValueEventListener(getData);
-        input.clear();
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -129,7 +128,8 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         DatabaseReference myRef2 = mDatabase.getReference("Connections");
         myRef2.child(ID).child(IDs.get(position)).removeValue();
         myRef2.child(IDs.get(position)).child(ID).removeValue();
-        input.clear();
+        input.remove(position);
+        IDs.remove(position);
         mAdapter.notifyDataSetChanged();
     }
 }

@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -498,13 +499,11 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
             public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                 double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                 System.out.println("Upload is " + progress + "% done");
-                //TODO dialog ablak
             }
         }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
                 System.out.println("Upload is paused");
-                //TODO dialog ablak
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -517,7 +516,8 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
-
+        Button save = (Button) findViewById(R.id.save);
+        save.setVisibility(View.GONE);
     }
 
 }

@@ -41,6 +41,7 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
     private RecyclerView.LayoutManager mLayoutManager;
     private List<ResultsListRow> input;
     private List<Track> trackList;
+    private DatabaseReference myRef;
     private ValueEventListener trackListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -90,7 +91,7 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = mAuth.getCurrentUser();
-        DatabaseReference myRef = mDatabase.getReference("Tracks").child(fUser.getUid());
+        myRef = mDatabase.getReference("Tracks").child(fUser.getUid());
         myRef.addValueEventListener(trackListener);
 
     }
@@ -134,7 +135,6 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = mAuth.getCurrentUser();
-        DatabaseReference myRef = mDatabase.getReference("Tracks").child(fUser.getUid());
         myRef.removeEventListener(trackListener);
     }
 }
