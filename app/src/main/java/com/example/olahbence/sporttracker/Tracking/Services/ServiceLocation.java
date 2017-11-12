@@ -1,5 +1,7 @@
 package com.example.olahbence.sporttracker.Tracking.Services;
 
+//TODO thread
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -246,7 +248,7 @@ public class ServiceLocation extends Service {
     private Notification getMyNotification(String text) {
         Intent intent = new Intent(this, TrackingActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(TrackingActivity.class);

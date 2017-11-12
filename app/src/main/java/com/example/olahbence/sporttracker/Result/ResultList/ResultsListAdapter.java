@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.olahbence.sporttracker.R;
@@ -68,6 +69,7 @@ public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.
         public TextView txtDate;
         public TextView txtTime;
         public TextView txtDistance;
+        public ImageView imgRunning;
         public View layout;
 
         public ViewHolder(View v) {
@@ -76,7 +78,7 @@ public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.
             txtDate = (TextView) v.findViewById(R.id.item_date);
             txtTime = (TextView) v.findViewById(R.id.item_time);
             txtDistance = (TextView) v.findViewById(R.id.item_distance);
-
+            imgRunning = (ImageView) v.findViewById(R.id.running_icon);
         }
     }
 

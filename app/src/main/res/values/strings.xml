@@ -53,4 +53,8 @@
     <string name="my_friends">My friends</string>
     <string name="add_friend">Add friend</string>
     <string name="delete_friend">Delete friend</string>
+    <string name="name">name</string>
+    <string name="email">email</string>
+    <string name="current_position">Current position</string>
+    <string name="running_icon">Running icon</string>
 </resources>

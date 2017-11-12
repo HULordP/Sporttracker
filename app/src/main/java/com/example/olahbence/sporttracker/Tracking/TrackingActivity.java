@@ -1,5 +1,7 @@
 package com.example.olahbence.sporttracker.Tracking;
 
+//TODO javít notification
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -213,7 +215,6 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         getSupportActionBar().setTitle("Tracking");
         ActionBar ab = getSupportActionBar();
 
-        // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
         mTime = (TextView) findViewById(R.id.time);
@@ -221,6 +222,13 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         mAveragePace = (TextView) findViewById(R.id.avarage_pace);
         mCurrentPace = (TextView) findViewById(R.id.current_pace);
         mPositionTime = (TextView) findViewById(R.id.positionTimeTest);
+
+        String toDisplay;
+        String aux2;
+        aux2 = getString(R.string.avarage_pace);
+        toDisplay = aux2 + "\n"
+                + "0" + " min/km";
+        mAveragePace.setText(toDisplay);
 
 
         mPolylineOptions = new PolylineOptions().color(Color.BLUE)
@@ -371,6 +379,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
     public void focus(View view) {
         focus = !focus;
+        view.setActivated(!view.isActivated());
     }
 
     public void toSave(View view) {

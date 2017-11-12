@@ -3,6 +3,10 @@
     package="com.example.olahbence.sporttracker">
 
     <!--
+        TODO ne leheseen elforgatni
+    -->
+
+    <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
@@ -33,10 +37,12 @@
         <activity
             android:name=".MainMenu.MainActivity"
             android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".Login.LoginActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,6 +54,7 @@
             android:name=".MainMenu.BigMapsActivity"
             android:label="@string/title_activity_big_maps"
             android:parentActivityName=".MainMenu.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -57,6 +64,7 @@
             android:name=".MainMenu.CurrentData"
             android:label="@string/current_data"
             android:parentActivityName=".MainMenu.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -66,6 +74,7 @@
             android:name=".Login.RegisterActivity"
             android:label="@string/title_activity_register"
             android:parentActivityName=".Login.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -75,6 +84,7 @@
             android:name=".Login.VerifyEmail"
             android:label="@string/title_verify_email"
             android:parentActivityName=".Login.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.Dialog">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -85,6 +95,7 @@
             android:label="@string/tracking_activity"
             android:launchMode="singleInstance"
             android:parentActivityName=".MainMenu.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -104,6 +115,7 @@
             android:name=".Result.Result.ResultActivity"
             android:label="@string/title_activity_result"
             android:parentActivityName=".Result.ResultList.ResultsListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -113,6 +125,7 @@
             android:name=".Result.ResultList.ResultsListActivity"
             android:label="@string/title_activity_results_list"
             android:parentActivityName=".MainMenu.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -122,6 +135,7 @@
             android:name=".Result.ResultList.Loading"
             android:label="@string/loading"
             android:parentActivityName=".Result.ResultList.ResultsListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.Dialog">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -131,6 +145,7 @@
             android:name=".Friends.Search.SearchFriends"
             android:label="@string/search"
             android:parentActivityName=".Friends.FriendsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -140,6 +155,7 @@
             android:name=".Friends.Activities.FriendsActivities"
             android:label="@string/friends_activities"
             android:parentActivityName=".Friends.FriendsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -149,6 +165,7 @@
             android:name=".Friends.FriendsActivity"
             android:label="@string/friends"
             android:parentActivityName=".MainMenu.MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -158,6 +175,7 @@
             android:name=".Friends.Search.AddFriends"
             android:label="@string/add"
             android:parentActivityName=".Friends.Search.SearchFriends"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.Dialog">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -167,6 +185,7 @@
             android:name=".Friends.MyFriends.MyFriends"
             android:label="@string/my_friends"
             android:parentActivityName=".Friends.FriendsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

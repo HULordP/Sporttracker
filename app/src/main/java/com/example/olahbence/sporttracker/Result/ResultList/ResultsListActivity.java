@@ -57,6 +57,7 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
                 input.add(current);
             }
             Collections.reverse(input);
+            Collections.reverse(trackList);
             mAdapter.notifyDataSetChanged();
         }
 

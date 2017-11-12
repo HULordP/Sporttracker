@@ -16,7 +16,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/blue"
             android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:titleTextColor="@color/white" />
 
@@ -39,18 +39,33 @@
             android:onClick="startTrack"
             android:text="@string/start_tracking" />
 
+        <!--TODO nagyobb gombok-->
+
         <ImageButton
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_below="@+id/toolbar"
-            android:layout_marginEnd="15dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
             android:background="?android:selectableItemBackground"
             android:contentDescription="@string/current_data"
             android:onClick="currentData"
-            android:src="@drawable/ic_info_black_24dp" />
+            android:src="@drawable/ic_info_black_36dp" />
+
+        <ImageButton
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/button1"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            android:background="?android:selectableItemBackground"
+            android:contentDescription="@string/current_position"
+            android:onClick="currentPosition"
+            android:src="@drawable/ic_gps_fixed_black_36dp" />
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/gps_fixed"
@@ -89,13 +104,15 @@
             android:textAlignment="center" />
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/left_drawer"
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation_view"
+        style="@style/DefaultText"
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/dark"
-        android:choiceMode="singleChoice"
-        android:divider="@drawable/double_divider"
-        android:dividerHeight="0dp" />
+        android:fitsSystemWindows="true"
+        android:paddingEnd="@dimen/desing_navigation_padding_right"
+        android:paddingStart="@dimen/desing_navigation_padding_left"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/navigation_drawer" />
 </android.support.v4.widget.DrawerLayout>

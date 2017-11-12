@@ -7,9 +7,10 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        style="@style/DefaultText"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/dark"
+        android:background="@color/blue"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -18,15 +19,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_blue"
-        android:orientation="vertical"
-        android:paddingTop="20dp">
+        android:layout_marginTop="40dp"
+        android:orientation="vertical">
 
-        <TextView
+        <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/technology"
             style="@style/CurrentDataText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
             android:text="@string/technology" />
 
         <LinearLayout
@@ -34,7 +35,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/longitude"
                 style="@style/CurrentDataText"
                 android:layout_width="0dp"
@@ -42,7 +43,7 @@
                 android:layout_weight="1"
                 android:text="@string/longitude" />
 
-            <TextView
+            <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/latitude"
                 style="@style/CurrentDataText"
                 android:layout_width="0dp"
@@ -57,7 +58,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
+            <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/speed"
                 style="@style/CurrentDataText"
                 android:layout_width="0dp"
@@ -65,7 +66,7 @@
                 android:layout_weight="1"
                 android:text="@string/speed" />
 
-            <TextView
+            <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/height"
                 style="@style/CurrentDataText"
                 android:layout_width="0dp"
@@ -81,7 +82,7 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <TextView
+            <com.devspark.robototextview.widget.RobotoTextView
                 android:id="@+id/positionTime"
                 style="@style/CurrentDataText"
                 android:layout_width="match_parent"

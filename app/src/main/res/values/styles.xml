@@ -1,13 +1,8 @@
 <resources>
-
-    <style name="AppTheme2" parent="Theme.AppCompat.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:textViewStyle">@style/DefaultText</item>
-    </style>
-
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:textViewStyle">@style/DefaultText</item>
+        <item name="android:colorPrimaryDark">@color/blue_darker</item>
     </style>
 
     <style name="DefaultText" parent="Widget.AppCompat.TextView.SpinnerItem">
@@ -15,6 +10,13 @@
         <item name="fontFamily">roboto</item>
         <item name="textWeight">normal</item>
         <item name="textStyle">normal</item>
+    </style>
+
+    <style name="DateText">
+        <item name="fontFamily">roboto</item>
+        <item name="textWeight">bold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/blue_darker</item>
     </style>
 
     <style name="MapText" parent="Widget.AppCompat.TextView.SpinnerItem">
@@ -31,7 +33,19 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">@drawable/tile_bg</item>
-        <item name="android:layout_margin">10dp</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:layout_marginEnd">10dp</item>
+        <item name="android:layout_marginTop">32dp</item>
+    </style>
+
+    <style name="TrackingText" parent="Widget.AppCompat.TextView.SpinnerItem">
+        <item name="fontFamily">roboto</item>
+        <item name="textWeight">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/tile_bg</item>
+        <item name="android:layout_margin">8dp</item>
     </style>
 
 
@@ -39,7 +53,7 @@
         <!-- Attributes of RobotoButton -->
         <item name="fontFamily">roboto</item>
         <item name="textWeight">ultra_bold</item>
-        <item name="android:textColor">@color/orange_dark</item>
+        <item name="android:textColor">@color/cian</item>
         <item name="android:gravity">center</item>
         <item name="android:background">@color/blue</item>
         <item name="android:layout_width">match_parent</item>

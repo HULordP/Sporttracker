@@ -1,16 +1,16 @@
 package com.example.olahbence.sporttracker.MainMenu;
 //TODO remove ValueEventListeners!!!!!!!!!!!!!!
-//TODO reverse List
+//TODO drawer header
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.location.GnssStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -22,10 +22,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.olahbence.sporttracker.Friends.FriendsActivity;
 import com.example.olahbence.sporttracker.Login.LoginActivity;
@@ -41,6 +40,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private NavigationView navigationView;
 
 
     @Override
@@ -88,26 +89,64 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Main menu");
-        mPlanetTitles = getResources().getStringArray(R.array.navigation_drawer);
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        mPlanetTitles[0] = user.getDisplayName();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item,
-                mPlanetTitles));
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerToggle = new ActionBarDrawerToggle(
-                this,
-                mDrawerLayout,
-                R.string.drawer_open,
-                R.string.drawer_close
-        );
+
+
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                if (menuItem.isChecked()) menuItem.setChecked(false);
+                else menuItem.setChecked(true);
+                mDrawerLayout.closeDrawers();
+                switch (menuItem.getItemId()) {
+                    case R.id.results:
+                        toResult();
+                        return true;
+                    case R.id.friends:
+                        toFriends();
+                        return true;
+                    case R.id.log_out:
+                        toLogin();
+                        return true;
+                    default:
+                        Toast.makeText(getApplicationContext(), "Somethings Wrong", Toast.LENGTH_SHORT).show();
+                        return true;
+                }
+            }
+        });
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, myToolbar,
+                R.string.drawer_open, R.string.drawer_close) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
         Drawable drawable = ResourcesCompat.getDrawable(getResources(),
                 R.drawable.ic_view_headline_white_24dp, this.getTheme());
         mDrawerToggle.setHomeAsUpIndicator(drawable);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+
+        View header = navigationView.getHeaderView(0);
+        TextView name = (TextView) header.findViewById(R.id.header_name);
+        name.setText(user.getDisplayName());
+        TextView email = (TextView) header.findViewById(R.id.header_email);
+        email.setText(user.getEmail());
+
+
         gpsFix = (TextView) findViewById(R.id.gps_fixed);
         satellite = (TextView) findViewById(R.id.satellite_in_view);
         satellite2 = (TextView) findViewById(R.id.satellite_fixed);
@@ -127,9 +166,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onLocationResult(LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
                     mLastKnownLocation = location;
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(mLastKnownLocation.getLatitude(),
-                                    mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                     putMarker();
                     String aux = getString(R.string.gps_fixed);
                     if (mLastKnownLocation.getSpeed() != 0) {
@@ -237,9 +273,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng currentLocation = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
         MarkerOptions aux = new MarkerOptions().position(currentLocation);
         if (b1) {
-            mMarker = mMap.addMarker(aux.title("Marker in current location"));
+            mMarker = mMap.addMarker(aux.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black_36dp)));
             b1 = false;
         }
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            public boolean onMarkerClick(Marker marker) {
+                return true;
+            }
+        });
         mMarker.setPosition(currentLocation);
     }
 
@@ -252,9 +293,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
                             mLastKnownLocation = task.getResult();
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            currentPosition1();
                             putMarker();
                             createLocationRequest();
                             startLocationUpdates();
@@ -313,55 +352,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         finish();
     }
 
-    private void selectItem(int position) {
-        if (position == 1)
-            toResult();
-        if (position == 2)
-            toFriends();
-        if (position == 3) {
-            FirebaseAuth.getInstance().signOut();
-            toLogin();
-        }
-        mDrawerList.setItemChecked(position, true);
-        setTitle(mPlanetTitles[position]);
-        mDrawerLayout.closeDrawer(mDrawerList);
-    }
-
     private void toFriends() {
         Intent i = new Intent(MainActivity.this, FriendsActivity.class);
         startActivity(i);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            if (mDrawerLayout.isDrawerVisible(GravityCompat.START)) {
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-            } else {
-                mDrawerLayout.openDrawer(GravityCompat.START);
-            }
-
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void currentPosition(View view) {
+        currentPosition1();
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
-        }
+    public void currentPosition1() {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(mLastKnownLocation.getLatitude(),
+                        mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
     }
 }
