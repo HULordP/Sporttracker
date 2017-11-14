@@ -1,6 +1,7 @@
 package com.example.olahbence.sporttracker.Result.Result.Fragments;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Result.Result.ResultAdapter;
@@ -20,21 +22,14 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class AveragePacesFragment extends Fragment {
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private ResultAdapter mAdapter;
 
     private List<ResultRow> input;
-
-    private File file;
+    private RecyclerView mRecyclerView;
 
     public AveragePacesFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -49,60 +44,76 @@ public class AveragePacesFragment extends Fragment {
 
         bindPaces(view);
 
-        loadPaces();
+        String filePath = getActivity().getApplicationContext().getFilesDir().getPath() + File.separator + "track.txt";
+        new loadFileTask().execute(filePath);
 
         return view;
     }
 
     private void bindPaces(View root) {
-        mRecyclerView = (RecyclerView) root.findViewById(R.id.avarage_pace_list);
-        mLayoutManager = new LinearLayoutManager(this.getContext());
+        mRecyclerView = root.findViewById(R.id.avarage_pace_list);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         input = new ArrayList<>();
         mAdapter = new ResultAdapter(input);
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void loadPaces() {
+    private class loadFileTask extends AsyncTask<String, Void, Void> {
 
-        String filePath = getActivity().getApplicationContext().getFilesDir().getPath() + File.separator + "track.txt";
-        file = new
+        @Override
+        protected Void doInBackground(String... strings) {
 
-                File(filePath);
-        try
+            String filePath = strings[0];
+            File file = new File(filePath);
+            try
 
-        {
-            FileReader filereader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(filereader);
-            String line;
-            int i = 0;
-            try {
-                while ((line = bufferedReader.readLine()) != null) {
-                    if (i == 2) {
-                        String[] averagePace = line.split(",");
-                        int size = averagePace.length;
-                        for (int ii = 0; ii < size; ii++) {
-                            ResultRow resultRow = new ResultRow(averagePace[ii]);
-                            resultRow.setNumber(Integer.toString(ii + 1) + ". km");
-                            input.add(resultRow);
-                            mAdapter.notifyDataSetChanged();
+            {
+                FileReader filereader = new FileReader(file);
+                BufferedReader bufferedReader = new BufferedReader(filereader);
+                String line;
+                int i = 0;
+                try {
+                    while ((line = bufferedReader.readLine()) != null) {
+                        if (i == 2) {
+                            if (line.length() > 0) {
+                                String[] averagePace = line.split(",");
+                                int size = averagePace.length;
+                                for (int ii = 0; ii < size; ii++) {
+                                    ResultRow resultRow = new ResultRow(averagePace[ii]);
+                                    resultRow.setNumber(Integer.toString(ii + 1) + ". km");
+                                    input.add(resultRow);
+                                }
+                            }
+                            if (line.length() == 0) {
+                                TextView textView = getActivity().findViewById(R.id.tvSmall);
+                                textView.setVisibility(View.VISIBLE);
+                                mRecyclerView.setVisibility(View.GONE);
+                            }
+
                         }
-
+                        i++;
+                        if (i > 2)
+                            break;
                     }
-                    i++;
-                    if (i > 2)
-                        break;
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
+                bufferedReader.close();
+                filereader.close();
+            } catch (
+                    Exception e)
+
+            {
                 e.printStackTrace();
             }
-            bufferedReader.close();
-            filereader.close();
-        } catch (
-                Exception e)
+            return null;
+        }
 
-        {
-            e.printStackTrace();
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            mAdapter.notifyDataSetChanged();
         }
     }
 }

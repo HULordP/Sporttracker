@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:background="@color/blue"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/del_friends"
+        style="@style/DefaultText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/do_you_want_to_delete"
+        android:textColor="@color/white" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/btnAdd"
+            style="@style/DefaultText"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:background="@color/blue_darker"
+            android:onClick="Delete"
+            android:text="@string/delete"
+            android:textColor="@color/cian"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Button
+            style="@style/DefaultText"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="24dp"
+            android:background="@color/blue_darker"
+            android:onClick="Cancel"
+            android:text="@string/cancel"
+            android:textColor="@color/cian"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

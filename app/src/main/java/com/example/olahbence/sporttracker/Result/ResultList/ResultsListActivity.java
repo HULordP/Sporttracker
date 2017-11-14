@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Result.Result.ResultActivity;
@@ -35,12 +37,15 @@ import java.util.List;
 
 public class ResultsListActivity extends AppCompatActivity implements ResultsListAdapter.OnItemClicked {
 
+    public static final String STOP_LOADING = "STOP_LOADING";
     public String TAG;
     private RecyclerView mRecyclerView;
     private ResultsListAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private List<ResultsListRow> input;
+    private List<ResultsListRow> allTrack;
     private List<Track> trackList;
+    private int index;
     private DatabaseReference myRef;
     private ValueEventListener trackListener = new ValueEventListener() {
         @Override
@@ -54,11 +59,42 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
                 double distanceToUpload = Double.parseDouble(track.getDistance());
                 ResultsListRow current =
                         new ResultsListRow(dateToDisplay, String.format("%.2f", distanceToUpload) + " km", track.getTime());
-                input.add(current);
+                allTrack.add(current);
             }
-            Collections.reverse(input);
+            Collections.reverse(allTrack);
             Collections.reverse(trackList);
+            while (index != 10) {
+                input.add(allTrack.get(index));
+                index++;
+            }
             mAdapter.notifyDataSetChanged();
+            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
+                        if (index + 1 != allTrack.size()) {
+                            int temp = 5;
+                            while (temp != 0) {
+                                if (allTrack.size() == index + 1) {
+                                    input.add(allTrack.get(index));
+                                    break;
+                                }
+                                input.add(allTrack.get(index));
+                                index++;
+                                temp--;
+                            }
+                            recyclerView.post(new Runnable() {
+                                public void run() {
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            RelativeLayout rl = findViewById(R.id.relative_layout);
+            rl.setVisibility(View.GONE);
         }
 
         @Override
@@ -72,20 +108,24 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results_list);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Results");
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.result_list);
+        mRecyclerView = findViewById(R.id.result_list);
 
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         trackList = new ArrayList<>();
 
+        RelativeLayout rl = findViewById(R.id.relative_layout);
+        rl.setVisibility(View.VISIBLE);
+
         input = new ArrayList<>();
+        allTrack = new ArrayList<>();
         mAdapter = new ResultsListAdapter(input, this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -98,9 +138,16 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        RelativeLayout rl = findViewById(R.id.relative_layout);
+        rl.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onItemClick(int position) {
-        Intent ii = new Intent(ResultsListActivity.this, Loading.class);
-        startActivity(ii);
+        RelativeLayout rl = findViewById(R.id.relative_layout);
+        rl.setVisibility(View.VISIBLE);
         Track track = trackList.get(position);
         String filename = track.getFilename();
         Date date = new Date(track.getDate());
@@ -117,13 +164,14 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         downloadedFile = new File(filePath);
         trackTxtRef.getFile(downloadedFile).addOnSuccessListener
                 (new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Intent i = new Intent(ResultsListActivity.this, ResultActivity.class);
-                i.putExtra("Date", toSend);
-                startActivity(i);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        Intent i = new Intent(ResultsListActivity.this, ResultActivity.class);
+                        i.putExtra("Date", toSend);
+                        i.putExtra("Identity", "ResultListActivity");
+                        startActivity(i);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
             }
@@ -133,9 +181,6 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
     @Override
     protected void onStop() {
         super.onStop();
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser fUser = mAuth.getCurrentUser();
         myRef.removeEventListener(trackListener);
     }
 }

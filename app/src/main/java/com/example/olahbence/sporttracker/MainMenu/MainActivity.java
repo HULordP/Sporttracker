@@ -1,6 +1,5 @@
 package com.example.olahbence.sporttracker.MainMenu;
 //TODO remove ValueEventListeners!!!!!!!!!!!!!!
-//TODO drawer header
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -24,9 +24,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.olahbence.sporttracker.Friends.FriendsActivity;
+import com.example.olahbence.sporttracker.Friends.Activities.FriendsActivities;
+import com.example.olahbence.sporttracker.Friends.MyFriends.MyFriends;
 import com.example.olahbence.sporttracker.Login.LoginActivity;
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Result.ResultList.ResultsListActivity;
@@ -56,13 +56,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean mLocationPermissionGranted;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation;
-    private int DEFAULT_ZOOM = 16;
-    private SupportMapFragment main;
     private boolean b1 = true;
     private Marker mMarker;
     private LocationCallback mLocationCallback;
     private LocationRequest mLocationRequest;
-    private GnssStatus.Callback mGnssStatusCallback;
     private int satelliteCount;
     private TextView gpsFix;
     private TextView satellite;
@@ -70,11 +67,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int fixSatelliteCount;
     private String mSatellite;
     private String mSatelliteFix;
-    private LocationManager locManager;
     private String[] mPlanetTitles;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
-    private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView navigationView;
 
 
@@ -82,19 +77,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        main = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment main = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapMain);
         main.getMapAsync(this);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Main menu");
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            boolean showText = extras.getBoolean("Login", false);
+            if (showText) {
+                String userName = user.getDisplayName();
+                String aux = "Welcome " + userName;
+                showText(aux);
+            }
+        }
 
-
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -108,17 +111,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     case R.id.friends:
                         toFriends();
                         return true;
+                    case R.id.friends_results:
+                        toFriendsResults();
+                        return true;
                     case R.id.log_out:
                         toLogin();
                         return true;
                     default:
-                        Toast.makeText(getApplicationContext(), "Somethings Wrong", Toast.LENGTH_SHORT).show();
+                        showText("Somethings Wrong");
                         return true;
                 }
             }
         });
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, myToolbar,
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, myToolbar,
                 R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
@@ -141,20 +147,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mDrawerToggle.syncState();
 
         View header = navigationView.getHeaderView(0);
-        TextView name = (TextView) header.findViewById(R.id.header_name);
+        TextView name = header.findViewById(R.id.header_name);
         name.setText(user.getDisplayName());
-        TextView email = (TextView) header.findViewById(R.id.header_email);
+        TextView email = header.findViewById(R.id.header_email);
         email.setText(user.getEmail());
 
 
-        gpsFix = (TextView) findViewById(R.id.gps_fixed);
-        satellite = (TextView) findViewById(R.id.satellite_in_view);
-        satellite2 = (TextView) findViewById(R.id.satellite_fixed);
+        gpsFix = findViewById(R.id.gps_fixed);
+        satellite = findViewById(R.id.satellite_in_view);
+        satellite2 = findViewById(R.id.satellite_fixed);
         mSatellite = getString(R.string.number_of_satellites);
         mSatelliteFix = getString(R.string.number_of_fixed_satellites);
         String toDisplay;
-        String aux = getString(R.string.gps_fixed);
-        toDisplay = aux + " no";
+        String aux2 = getString(R.string.gps_fixed);
+        toDisplay = aux2 + " no";
         gpsFix.setText(toDisplay);
         toDisplay = mSatellite + "0";
         satellite.setText(toDisplay);
@@ -178,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         };
-        mGnssStatusCallback = new GnssStatus.Callback() {
+        GnssStatus.Callback mGnssStatusCallback = new GnssStatus.Callback() {
             @Override
             public void onSatelliteStatusChanged(GnssStatus status) {
                 super.onSatelliteStatusChanged(status);
@@ -198,8 +204,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 satellite2.setText(toDisplay);
             }
         };
-        locManager =
-                (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationManager locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         getLocationPermission();
         try {
             if (mLocationPermissionGranted) {
@@ -228,6 +233,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onRestart() {
         super.onRestart();
         getDeviceLocation();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        for (int i = 0; i < navigationView.getMenu().size(); i++) {
+            navigationView.getMenu().getItem(i).setChecked(false);
+        }
     }
 
     @Override
@@ -348,12 +361,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void toLogin() {
         Intent i = new Intent(MainActivity.this, LoginActivity.class);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
         startActivity(i);
         finish();
     }
 
     private void toFriends() {
-        Intent i = new Intent(MainActivity.this, FriendsActivity.class);
+        Intent i = new Intent(MainActivity.this, MyFriends.class);
+        startActivity(i);
+    }
+
+    private void toFriendsResults() {
+        Intent i = new Intent(MainActivity.this, FriendsActivities.class);
         startActivity(i);
     }
 
@@ -362,8 +382,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void currentPosition1() {
+        int DEFAULT_ZOOM = 16;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(mLastKnownLocation.getLatitude(),
                         mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+    }
+
+    private void showText(String text) {
+        Snackbar.make(mDrawerLayout, text, Snackbar.LENGTH_LONG).show();
     }
 }

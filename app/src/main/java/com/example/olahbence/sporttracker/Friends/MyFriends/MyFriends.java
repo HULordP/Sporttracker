@@ -1,13 +1,20 @@
 package com.example.olahbence.sporttracker.Friends.MyFriends;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import com.example.olahbence.sporttracker.Friends.Search.SearchFriends;
 import com.example.olahbence.sporttracker.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,6 +48,12 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
                 IDs.add(childSnapshot.getKey());
                 mAdapter.notifyDataSetChanged();
             }
+            RelativeLayout rl = findViewById(R.id.relative_layout);
+            rl.setVisibility(View.GONE);
+            mRecyclerView = findViewById(R.id.friends_result_list);
+            mRecyclerView.setVisibility(View.VISIBLE);
+            FloatingActionButton fab = findViewById(R.id.addButton);
+            fab.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -70,21 +83,34 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
         }
     };
+    private int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_friends);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mRecyclerView = findViewById(R.id.friends_result_list);
+        mRecyclerView.setVisibility(View.GONE);
+        FloatingActionButton fab = findViewById(R.id.addButton);
+        fab.setVisibility(View.GONE);
+        RelativeLayout rl = findViewById(R.id.relative_layout);
+        rl.setVisibility(View.VISIBLE);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("My friends");
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.friends_result_list);
-
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), SearchFriends.class);
+                startActivity(i);
+            }
+        });
 
         input = new ArrayList<>();
         IDs = new ArrayList<>();
@@ -92,6 +118,11 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         mRecyclerView.setAdapter(mAdapter);
 
         loadFriends();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void loadFriends() {
@@ -114,22 +145,42 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         myRef.child(ID).child(IDs.get(position)).child("connected").setValue("true");
         DatabaseReference myRef2 = mDatabase.getReference("Users");
         myRef2.child(IDs.get(position)).addValueEventListener(getData);
+        showText("Adding was successful");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 1) {
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = mAuth.getCurrentUser();
+            String ID = user.getUid();
+            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = mDatabase.getReference("Friends");
+            myRef.child(ID).child(IDs.get(pos)).removeValue();
+            myRef.child(IDs.get(pos)).child(ID).removeValue();
+            DatabaseReference myRef2 = mDatabase.getReference("Connections");
+            myRef2.child(ID).child(IDs.get(pos)).removeValue();
+            myRef2.child(IDs.get(pos)).child(ID).removeValue();
+            input.remove(pos);
+            IDs.remove(pos);
+            mAdapter.notifyDataSetChanged();
+            showText("Deleting was successful");
+        }
     }
 
     @Override
     public void onClearClick(int position) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        String ID = user.getUid();
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = mDatabase.getReference("Friends");
-        myRef.child(ID).child(IDs.get(position)).removeValue();
-        myRef.child(IDs.get(position)).child(ID).removeValue();
-        DatabaseReference myRef2 = mDatabase.getReference("Connections");
-        myRef2.child(ID).child(IDs.get(position)).removeValue();
-        myRef2.child(IDs.get(position)).child(ID).removeValue();
-        input.remove(position);
-        IDs.remove(position);
-        mAdapter.notifyDataSetChanged();
+        pos = position;
+        Intent i = new Intent(this, DeleteFriends.class);
+        String email = input.get(position).getEmail();
+        i.putExtra("Email", email);
+        startActivityForResult(i, 0);
     }
+
+    private void showText(String text) {
+        LinearLayout linearLayout = findViewById(R.id.lin_lay);
+        Snackbar.make(linearLayout, text, Snackbar.LENGTH_LONG).show();
+    }
+
 }

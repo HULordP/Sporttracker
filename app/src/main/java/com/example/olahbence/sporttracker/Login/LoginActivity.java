@@ -2,14 +2,14 @@ package com.example.olahbence.sporttracker.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import com.example.olahbence.sporttracker.MainMenu.MainActivity;
 import com.example.olahbence.sporttracker.R;
@@ -48,33 +48,25 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             if (user.isEmailVerified()) {
-                String userName = user.getDisplayName();
-                String aux = "Welcome " + userName;
-                Toast.makeText(LoginActivity.this, aux,
-                        Toast.LENGTH_SHORT).show();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
-                }, 1000);
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                i.putExtra("Login", true);
+                startActivity(i);
+                finish();
             } else {
                 setContentView(R.layout.activity_login);
-                Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+                Toolbar myToolbar = findViewById(R.id.toolbar);
                 setSupportActionBar(myToolbar);
                 getSupportActionBar().setTitle("Login");
-                mEmail = (EditText) findViewById(R.id.email);
-                mPassword = (EditText) findViewById(R.id.password);
+                mEmail = findViewById(R.id.email);
+                mPassword = findViewById(R.id.password);
             }
         } else {
             setContentView(R.layout.activity_login);
-            Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+            Toolbar myToolbar = findViewById(R.id.toolbar);
             setSupportActionBar(myToolbar);
             getSupportActionBar().setTitle("Login");
-            mEmail = (EditText) findViewById(R.id.email);
-            mPassword = (EditText) findViewById(R.id.password);
+            mEmail = findViewById(R.id.email);
+            mPassword = findViewById(R.id.password);
         }
 
     }
@@ -103,25 +95,15 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
-                            Toast.makeText(LoginActivity.this, R.string.auth_failed,
-                                    Toast.LENGTH_SHORT).show();
+                            showText(getString(R.string.auth_failed));
                         } else {
                             if (user.isEmailVerified()) {
-                                String userName = user.getDisplayName();
-                                String aux = "Welcome " + userName;
-                                Toast.makeText(LoginActivity.this, aux,
-                                        Toast.LENGTH_SHORT).show();
-                                Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    public void run() {
-                                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(i);
-                                        finish();
-                                    }
-                                }, 1000);
+                                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                i.putExtra("Login", true);
+                                startActivity(i);
+                                finish();
                             } else {
-                                Toast.makeText(LoginActivity.this, "Please verify your email",
-                                        Toast.LENGTH_LONG).show();
+                                showText("Please verify your email");
                             }
                         }
                     }
@@ -133,10 +115,8 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-
-    public void skip(View view) {
-        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(i);
-        finish();
+    private void showText(String text) {
+        LinearLayout linearLayout = findViewById(R.id.lin_lay);
+        Snackbar.make(linearLayout, text, Snackbar.LENGTH_LONG).show();
     }
 }

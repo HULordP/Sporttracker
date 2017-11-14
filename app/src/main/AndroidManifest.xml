@@ -2,15 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.olahbence.sporttracker">
 
-    <!--
-        TODO ne leheseen elforgatni
-    -->
-
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
-    -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -43,7 +34,7 @@
             android:name=".Login.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:theme="@style/BackgroundLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -75,7 +66,7 @@
             android:label="@string/title_activity_register"
             android:parentActivityName=".Login.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
+            android:theme="@style/BackgroundRegister">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.Login.LoginActivity" />
@@ -132,38 +123,18 @@
                 android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
         </activity>
         <activity
-            android:name=".Result.ResultList.Loading"
-            android:label="@string/loading"
-            android:parentActivityName=".Result.ResultList.ResultsListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.Dialog">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.olahbence.sporttracker.Result.ResultList.ResultsListActivity" />
-        </activity>
-        <activity
             android:name=".Friends.Search.SearchFriends"
             android:label="@string/search"
-            android:parentActivityName=".Friends.FriendsActivity"
+            android:parentActivityName=".Friends.MyFriends.MyFriends"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.olahbence.sporttracker.Friends.FriendsActivity" />
+                android:value="com.example.olahbence.sporttracker.Friends.MyFriends.MyFriends" />
         </activity>
         <activity
             android:name=".Friends.Activities.FriendsActivities"
             android:label="@string/friends_activities"
-            android:parentActivityName=".Friends.FriendsActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.olahbence.sporttracker.Friends.FriendsActivity" />
-        </activity>
-        <activity
-            android:name=".Friends.FriendsActivity"
-            android:label="@string/friends"
             android:parentActivityName=".MainMenu.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
@@ -176,7 +147,7 @@
             android:label="@string/add"
             android:parentActivityName=".Friends.Search.SearchFriends"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            android:theme="@style/NoTitleDialog">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.Friends.Search.SearchFriends" />
@@ -184,12 +155,33 @@
         <activity
             android:name=".Friends.MyFriends.MyFriends"
             android:label="@string/my_friends"
-            android:parentActivityName=".Friends.FriendsActivity"
+            android:parentActivityName=".MainMenu.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.olahbence.sporttracker.Friends.FriendsActivity" />
+                android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Friends.MyFriends.DeleteFriends"
+            android:label="@string/delete_friend"
+            android:parentActivityName=".Friends.MyFriends.MyFriends"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitleDialog">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.Friends.MyFriends.MyFriends" />
+        </activity>
+        <activity
+            android:name=".Tracking.DeleteTrack"
+            android:label="@string/del_track"
+            android:parentActivityName=".Tracking.TrackingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitleDialog">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.Tracking.TrackingActivity" />
+
         </activity>
     </application>
 

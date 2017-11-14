@@ -11,11 +11,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.example.olahbence.sporttracker.Friends.MyFriends.UserDatas;
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Result.Result.ResultActivity;
-import com.example.olahbence.sporttracker.Result.ResultList.Loading;
 import com.example.olahbence.sporttracker.Tracking.Database.Track;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,10 +43,12 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
     private RecyclerView mRecyclerView;
     private String TAG;
     private FriendsActivitesAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private LinearLayoutManager mLayoutManager;
     private List<FriendsActivitiesRow> input;
     private List<UserDatas> users;
     private List<Track> trackList;
+    private int index = 0;
+    private List<FriendsActivitiesRow> allTrack;
     private int i = 0;
     private int ii = 0;
     private ValueEventListener getTracks = new ValueEventListener() {
@@ -61,13 +64,46 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
                 FriendsActivitiesRow current =
                         new FriendsActivitiesRow(users.get(i).getEmail(), users.get(i).getName(),
                                 dateToDisplay, String.format("%.2f", distanceToUpload) + " km", track.getTime());
-                input.add(current);
-                if (input.size() > 1)
-                    sortActivites(input);
-                Collections.reverse(input);
-                Collections.reverse(trackList);
-                mAdapter.notifyDataSetChanged();
+                allTrack.add(current);
             }
+            if (allTrack.size() > 1)
+                sortActivites(allTrack);
+            Collections.reverse(allTrack);
+            Collections.reverse(trackList);
+            while (index != 10) {
+                if (allTrack.size() == index)
+                    break;
+                input.add(allTrack.get(index));
+                index++;
+            }
+            mAdapter.notifyDataSetChanged();
+            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
+                        if (index + 1 != allTrack.size()) {
+                            int temp = 5;
+                            while (temp != 0) {
+                                if (allTrack.size() == index + 1) {
+                                    input.add(allTrack.get(index));
+                                    break;
+                                }
+                                input.add(allTrack.get(index));
+                                index++;
+                                temp--;
+                            }
+                            recyclerView.post(new Runnable() {
+                                public void run() {
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            RelativeLayout rl = findViewById(R.id.relative_layout);
+            rl.setVisibility(View.GONE);
             i++;
         }
 
@@ -101,24 +137,35 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_activities);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Friends Activities");
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.friends_result_list);
+        mRecyclerView = findViewById(R.id.friends_result_list);
 
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
+        RelativeLayout rl = findViewById(R.id.relative_layout);
+        rl.setVisibility(View.VISIBLE);
+
         input = new ArrayList<>();
+        allTrack = new ArrayList<>();
         trackList = new ArrayList<>();
         users = new ArrayList<>();
         mAdapter = new FriendsActivitesAdapter(input, this);
         mRecyclerView.setAdapter(mAdapter);
 
         loadActivities();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        RelativeLayout rl = findViewById(R.id.relative_layout);
+        rl.setVisibility(View.GONE);
     }
 
     private void loadActivities() {
@@ -160,8 +207,8 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
 
     @Override
     public void onItemClick(final int position) {
-        Intent ii = new Intent(FriendsActivities.this, Loading.class);
-        startActivity(ii);
+        RelativeLayout rl = findViewById(R.id.relative_layout);
+        rl.setVisibility(View.VISIBLE);
         Track track = trackList.get(position);
         String filename = track.getFilename();
         Date date = new Date(track.getDate());
@@ -181,9 +228,11 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Intent i = new Intent(FriendsActivities.this, ResultActivity.class);
+                        i.putExtra("Friend", true);
                         i.putExtra("Date", toSend);
                         i.putExtra("Name", input.get(position).getName());
                         i.putExtra("Email", input.get(position).getEmail());
+                        i.putExtra("Identity", "FriendsActivities");
                         startActivity(i);
                     }
                 }).addOnFailureListener(new OnFailureListener() {

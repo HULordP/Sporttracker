@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         style="@style/DefaultText"
@@ -17,12 +16,32 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@color/white" />
 
+    <RelativeLayout
+        android:id="@+id/relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_blue"
+        android:visibility="gone">
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/avi"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            app:indicatorColor="@color/blue"
+            app:indicatorName="BallZigZagDeflectIndicator" />
+
+    </RelativeLayout>
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/result_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_blue">
-
+        android:background="@color/light_blue"
+        android:scrollbarSize="5dp"
+        android:scrollbarThumbVertical="@android:color/black"
+        android:scrollbars="vertical">
 
     </android.support.v7.widget.RecyclerView>
 

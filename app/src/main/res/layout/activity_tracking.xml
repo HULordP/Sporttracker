@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/lin_lay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -17,6 +18,22 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@color/white" />
+
+    <RelativeLayout
+        android:id="@+id/relative_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/avi"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            app:indicatorColor="@color/blue"
+            app:indicatorName="BallZigZagDeflectIndicator" />
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -50,7 +67,7 @@
         android:layout_marginTop="16dp"
         android:orientation="horizontal">
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             android:id="@+id/time"
             style="@style/TrackingText"
             android:layout_width="0dp"
@@ -58,7 +75,7 @@
             android:layout_weight="1"
             android:text="@string/time" />
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             android:id="@+id/distance"
             style="@style/TrackingText"
             android:layout_width="0dp"
@@ -74,7 +91,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             android:id="@+id/avarage_pace"
             style="@style/TrackingText"
             android:layout_width="0dp"
@@ -82,7 +99,7 @@
             android:layout_weight="1"
             android:text="@string/avarage_pace" />
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             android:id="@+id/current_pace"
             style="@style/TrackingText"
             android:layout_width="0dp"
@@ -93,27 +110,41 @@
 
     </LinearLayout>
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         android:id="@+id/positionTimeTest"
         style="@style/TrackingText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/position_time" />
 
-    <com.devspark.robototextview.widget.RobotoButton
-        android:id="@+id/save"
-        style="@style/MapBigButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="24dp"
-        android:onClick="toSave"
-        android:paddingEnd="24dp"
-        android:paddingStart="24dp"
-        android:text="@string/save" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/save"
+            style="@style/MapBigButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/saving_avi"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="24dp"
+            android:layout_marginTop="24dp"
+            android:onClick="toSave"
+            android:paddingEnd="24dp"
+            android:paddingStart="24dp"
+            android:text="@string/save" />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/saving_avi"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            app:indicatorColor="@color/blue"
+            app:indicatorName="BallZigZagDeflectIndicator" />
+
+    </RelativeLayout>
 
 
 </LinearLayout>

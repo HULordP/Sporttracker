@@ -29,17 +29,15 @@
             android:layout_alignParentTop="true"
             android:layout_gravity="center" />
 
-        <com.devspark.robototextview.widget.RobotoButton
+        <Button
             android:id="@+id/button2"
             style="@style/MapBigButton"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="48dp"
             android:layout_marginEnd="50dp"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="52dp"
             android:onClick="startTrack"
             android:text="@string/start_tracking" />
-
-        <!--TODO nagyobb gombok-->
 
         <ImageButton
             android:id="@+id/button1"
@@ -67,7 +65,7 @@
             android:onClick="currentPosition"
             android:src="@drawable/ic_gps_fixed_black_36dp" />
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             android:id="@+id/gps_fixed"
             style="@style/MapText"
             android:layout_width="wrap_content"
@@ -75,23 +73,23 @@
             android:layout_above="@id/button2"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/gps_fixed"
             android:textAlignment="center" />
 
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             android:id="@+id/satellite_fixed"
             style="@style/MapText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@id/gps_fixed"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/number_of_fixed_satellites"
             android:textAlignment="center" />
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             android:id="@+id/satellite_in_view"
             style="@style/MapText"
             android:layout_width="wrap_content"
@@ -99,7 +97,7 @@
             android:layout_above="@id/satellite_fixed"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/number_of_satellites"
             android:textAlignment="center" />
     </RelativeLayout>
@@ -107,7 +105,7 @@
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation_view"
         style="@style/DefaultText"
-        android:layout_width="240dp"
+        android:layout_width="270dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"

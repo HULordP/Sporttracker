@@ -22,7 +22,7 @@
         android:layout_marginTop="40dp"
         android:orientation="vertical">
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <TextView
             android:id="@+id/technology"
             style="@style/CurrentDataText"
             android:layout_width="match_parent"
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/longitude"
                 style="@style/CurrentDataText"
                 android:layout_width="0dp"
@@ -43,7 +43,7 @@
                 android:layout_weight="1"
                 android:text="@string/longitude" />
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/latitude"
                 style="@style/CurrentDataText"
                 android:layout_width="0dp"
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/speed"
                 style="@style/CurrentDataText"
                 android:layout_width="0dp"
@@ -66,7 +66,7 @@
                 android:layout_weight="1"
                 android:text="@string/speed" />
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/height"
                 style="@style/CurrentDataText"
                 android:layout_width="0dp"
@@ -82,7 +82,7 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/positionTime"
                 style="@style/CurrentDataText"
                 android:layout_width="match_parent"

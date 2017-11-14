@@ -1,7 +1,5 @@
 package com.example.olahbence.sporttracker.Tracking.Services;
 
-//TODO thread
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -48,6 +46,7 @@ public class ServiceLocation extends Service {
     private LocationCallback mLocationCallback;
     private boolean mLocationPermissionGranted;
     private LocationRequest mLocationRequest;
+    private boolean stop = false;
     private Location mLastKnownLocation;
     private Location mBeforeLastLocation;
     private long mTimeTime;
@@ -76,8 +75,18 @@ public class ServiceLocation extends Service {
                 Intent i = new Intent(BR_NEW_AVERAGE_PACE);
                 i.putExtra(KEY_AVERAGE_PACE, averagePace);
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
-
+                Intent intent2 = new Intent(BR_NEW_DISTANCE);
+                intent2.putExtra(KEY_DISTANCE, f1);
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent2);
+                stop = false;
             }
+        }
+    };
+
+    private BroadcastReceiver mStopReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            stop = intent.getBooleanExtra(TrackingActivity.BR_STOP, false);
         }
     };
 
@@ -95,6 +104,9 @@ public class ServiceLocation extends Service {
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mRestartReceiver,
                 new IntentFilter(TrackingActivity.BR_NEW_RESTART));
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mStopReceiver,
+                new IntentFilter(TrackingActivity.BR_STOP));
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         getLocationPermission();
         mLocationCallback = new LocationCallback() {
@@ -109,98 +121,26 @@ public class ServiceLocation extends Service {
                     intent.putExtra(KEY_LOCATION, location);
                     LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
-                    String LatLong_String = mLastKnownLocation.getLatitude()
-                            + "," + mLastKnownLocation.getLongitude() + "\n";
-                    String filename = "Locations_LatLong";
-                    String filePath = getApplicationContext().getFilesDir().getPath()
-                            + File.separator + filename + ".txt";
-                    mLocations = new File(filePath);
-                    if (!mLocations.exists()) {
-                        try {
-                            boolean created = mLocations.createNewFile();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    try {
-                        FileWriter mFileWriter = new FileWriter(mLocations, true);
-                        mFileWriter.write(LatLong_String);
-                        mFileWriter.close();
-                        Intent intent3 = new Intent(BR_NEW_LAT_LONG);
-                        LatLng toSend = new LatLng(mLastKnownLocation.getLatitude(),
-                                mLastKnownLocation.getLongitude());
-                        intent3.putExtra(KEY_LAT_LONG, toSend);
-                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent3);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    WriterThread1 w1 = new WriterThread1("Locations_LatLong");
+                    w1.start();
 
 
                     if (mBeforeLastLocation != null) {
                         f1 += mBeforeLastLocation.distanceTo(mLastKnownLocation);
-                        Intent intent2 = new Intent(BR_NEW_DISTANCE);
-                        intent2.putExtra(KEY_DISTANCE, f1);
-                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent2);
-                    }
-
-                    String average_pace;
-                    filename = "Average_Paces";
-                    filePath = getApplicationContext().getFilesDir().getPath()
-                            + File.separator + filename + ".txt";
-                    mAveragePaces = new File(filePath);
-
-
-                    if (!mAveragePaces.exists()) {
-                        try {
-                            boolean created = mAveragePaces.createNewFile();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        if (!stop) {
+                            Intent intent2 = new Intent(BR_NEW_DISTANCE);
+                            intent2.putExtra(KEY_DISTANCE, f1);
+                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent2);
                         }
                     }
 
-                    if (f1 >= i1 * 1000) {
-                        if (i1 == 1) {
-                            long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
-                            Intent intent4 = new Intent(BR_NEW_AVERAGE_PACE);
-                            average_pace = TimeUnit.SECONDS.toMinutes(timeSecond)
-                                    + ":" + timeSecond % 60 + "\n";
-                            intent4.putExtra(KEY_AVERAGE_PACE, timeSecond);
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent4);
-                            averagePace = timeSecond;
-                            try {
-                                FileWriter mFileWriter = new FileWriter(mAveragePaces, true);
-                                mFileWriter.write(average_pace);
-                                mFileWriter.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            f2 = mTimeTime;
-                            i1 += 1;
-                        } else {
-                            long f3 = mTimeTime - f2;
-                            long timeSecond = TimeUnit.MILLISECONDS.toSeconds(f3);
-                            Intent intent4 = new Intent(BR_NEW_AVERAGE_PACE);
-                            average_pace = TimeUnit.SECONDS.toMinutes(timeSecond)
-                                    + ":" + timeSecond % 60 + "\n";
-                            intent4.putExtra(KEY_AVERAGE_PACE, timeSecond);
-                            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent4);
-                            averagePace = timeSecond;
-                            try {
-                                FileWriter mFileWriter = new FileWriter(mAveragePaces, true);
-                                mFileWriter.write(average_pace);
-                                mFileWriter.close();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            f2 = mTimeTime;
-                            i1 += 1;
-                        }
-                    }
+
+                    WriterThread2 w2 = new WriterThread2("Average_Paces");
+                    w2.start();
+
                 }
             }
-        }
-
-        ;
+        };
 
         createLocationRequest();
 
@@ -290,9 +230,115 @@ public class ServiceLocation extends Service {
         Intent i = new Intent(getApplicationContext(), ServiceTime.class);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(
                 mTimeReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                mStopReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                mRestartReceiver);
         cancelNotification();
         stopService(i);
     }
 
+    class WriterThread1 extends Thread {
+        String filename;
+
+        WriterThread1(String filename) {
+            this.filename = filename;
+        }
+
+        public void run() {
+            String LatLong_String = mLastKnownLocation.getLatitude()
+                    + "," + mLastKnownLocation.getLongitude() + "\n";
+            String filePath = getApplicationContext().getFilesDir().getPath()
+                    + File.separator + filename + ".txt";
+            mLocations = new File(filePath);
+            if (!mLocations.exists()) {
+                try {
+                    boolean created = mLocations.createNewFile();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                FileWriter mFileWriter = new FileWriter(mLocations, true);
+                mFileWriter.write(LatLong_String);
+                mFileWriter.close();
+                if (!stop) {
+                    Intent intent3 = new Intent(BR_NEW_LAT_LONG);
+                    LatLng toSend = new LatLng(mLastKnownLocation.getLatitude(),
+                            mLastKnownLocation.getLongitude());
+                    intent3.putExtra(KEY_LAT_LONG, toSend);
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent3);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    class WriterThread2 extends Thread {
+        String filename;
+
+        WriterThread2(String filename) {
+            this.filename = filename;
+        }
+
+        public void run() {
+            String filePath = getApplicationContext().getFilesDir().getPath()
+                    + File.separator + filename + ".txt";
+            mAveragePaces = new File(filePath);
+
+
+            if (!mAveragePaces.exists()) {
+                try {
+                    boolean created = mAveragePaces.createNewFile();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (f1 >= i1 * 1000) {
+                if (i1 == 1) {
+                    long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
+                    String average_pace = TimeUnit.SECONDS.toMinutes(timeSecond)
+                            + ":" + timeSecond % 60 + "\n";
+                    if (!stop) {
+                        Intent intent4 = new Intent(BR_NEW_AVERAGE_PACE);
+                        intent4.putExtra(KEY_AVERAGE_PACE, timeSecond);
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent4);
+                    }
+                    averagePace = timeSecond;
+                    try {
+                        FileWriter mFileWriter = new FileWriter(mAveragePaces, true);
+                        mFileWriter.write(average_pace);
+                        mFileWriter.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    f2 = mTimeTime;
+                    i1 += 1;
+                } else {
+                    long f3 = mTimeTime - f2;
+                    long timeSecond = TimeUnit.MILLISECONDS.toSeconds(f3);
+                    String average_pace = TimeUnit.SECONDS.toMinutes(timeSecond)
+                            + ":" + timeSecond % 60 + "\n";
+                    if (!stop) {
+                        Intent intent4 = new Intent(BR_NEW_AVERAGE_PACE);
+                        intent4.putExtra(KEY_AVERAGE_PACE, timeSecond);
+                        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent4);
+                    }
+                    averagePace = timeSecond;
+                    try {
+                        FileWriter mFileWriter = new FileWriter(mAveragePaces, true);
+                        mFileWriter.write(average_pace);
+                        mFileWriter.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    f2 = mTimeTime;
+                    i1 += 1;
+                }
+            }
+        }
+    }
 
 }

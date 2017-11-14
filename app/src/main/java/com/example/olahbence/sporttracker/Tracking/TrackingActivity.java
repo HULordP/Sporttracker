@@ -9,17 +9,21 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Tracking.Database.Track;
@@ -44,6 +48,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,6 +65,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
     public static final String BR_NEW_RESTART = "BR_NEW_RESTART";
     public static final String KEY_RESTART = "KEY_RESTART";
+    public static final String BR_STOP = "BR_STOP";
     private TextView mTime;
     private TextView mDistance;
     private TextView mAveragePace;
@@ -210,25 +216,29 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         main = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mapTracking);
         main.getMapAsync(this);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle("Tracking");
         ActionBar ab = getSupportActionBar();
 
         ab.setDisplayHomeAsUpEnabled(true);
 
-        mTime = (TextView) findViewById(R.id.time);
-        mDistance = (TextView) findViewById(R.id.distance);
-        mAveragePace = (TextView) findViewById(R.id.avarage_pace);
-        mCurrentPace = (TextView) findViewById(R.id.current_pace);
-        mPositionTime = (TextView) findViewById(R.id.positionTimeTest);
+        mTime = findViewById(R.id.time);
+        mDistance = findViewById(R.id.distance);
+        mAveragePace = findViewById(R.id.avarage_pace);
+        mCurrentPace = findViewById(R.id.current_pace);
+        mPositionTime = findViewById(R.id.positionTimeTest);
 
         String toDisplay;
         String aux2;
         aux2 = getString(R.string.avarage_pace);
         toDisplay = aux2 + "\n"
-                + "0" + " min/km";
+                + "--";
         mAveragePace.setText(toDisplay);
+
+        String s1 = getString(R.string.distance);
+        toDisplay = s1 + "\n" + 0 + " km";
+        mDistance.setText(toDisplay);
 
 
         mPolylineOptions = new PolylineOptions().color(Color.BLUE)
@@ -246,35 +256,47 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                Intent i = new Intent(getApplicationContext(), ServiceLocation.class);
-                LocalBroadcastManager.getInstance(this).unregisterReceiver(
-                        mLocationReceiver);
-                LocalBroadcastManager.getInstance(this).unregisterReceiver(
-                        mDistanceReceiver);
-                LocalBroadcastManager.getInstance(this).unregisterReceiver(
-                        mAveragePaceReceiver);
-                LocalBroadcastManager.getInstance(this).unregisterReceiver(
-                        mTimeReceiver);
-                LocalBroadcastManager.getInstance(this).unregisterReceiver(
-                        mLatLongReceiver);
-                stopService(i);
-                File averagePaces;
-                String filename = "Average_Paces";
-                String filePath = getApplicationContext().getFilesDir().getPath()
-                        + File.separator + filename + ".txt";
-                averagePaces = new File(filePath);
-                boolean delete = averagePaces.delete();
-                filename = "Locations_LatLong";
-                filePath = getApplicationContext().getFilesDir().getPath()
-                        + File.separator + filename + ".txt";
-                mLocations = new File(filePath);
-
-                delete = mLocations.delete();
-                finish();
-                return (true);
+                Button save = findViewById(R.id.save);
+                if (save.getVisibility() != View.GONE) {
+                    Intent ii = new Intent(this, DeleteTrack.class);
+                    startActivityForResult(ii, 0);
+                    return (true);
+                }
         }
 
         return (super.onOptionsItemSelected(item));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 1) {
+            Intent i = new Intent(getApplicationContext(), ServiceLocation.class);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                    mLocationReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                    mDistanceReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                    mAveragePaceReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                    mTimeReceiver);
+            LocalBroadcastManager.getInstance(this).unregisterReceiver(
+                    mLatLongReceiver);
+            stopService(i);
+            File averagePaces;
+            String filename = "Average_Paces";
+            String filePath = getApplicationContext().getFilesDir().getPath()
+                    + File.separator + filename + ".txt";
+            averagePaces = new File(filePath);
+            boolean delete = averagePaces.delete();
+            filename = "Locations_LatLong";
+            filePath = getApplicationContext().getFilesDir().getPath()
+                    + File.separator + filename + ".txt";
+            mLocations = new File(filePath);
+
+            delete = mLocations.delete();
+            finish();
+        }
     }
 
     @Override
@@ -318,10 +340,15 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mLatLongReceiver,
                 new IntentFilter(ServiceLocation.BR_NEW_LAT_LONG));
+        RelativeLayout rl = findViewById(R.id.relative_layout);
+        rl.setVisibility(View.VISIBLE);
         main.getMapAsync(this);
         Intent intent = new Intent(BR_NEW_RESTART);
         intent.putExtra(KEY_RESTART, true);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+        String filename = "Locations_LatLong";
+        String filepath = getApplicationContext().getFilesDir().getPath() + File.separator + filename + ".txt";
+        new loadLocations().execute(filepath);
     }
 
     @Override
@@ -349,7 +376,6 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         filePath = getApplicationContext().getFilesDir().getPath()
                 + File.separator + filename + ".txt";
         mLocations = new File(filePath);
-
         delete = mLocations.delete();
         finish();
     }
@@ -367,7 +393,11 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
                 mTimeReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(
                 mLatLongReceiver);
+
         map = false;
+        Intent intent = new Intent(BR_STOP);
+        intent.putExtra(BR_STOP, true);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     @Override
@@ -395,6 +425,11 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         LocalBroadcastManager.getInstance(this).unregisterReceiver(
                 mLatLongReceiver);
         stopService(i);
+
+        Button save = findViewById(R.id.save);
+        save.setVisibility(View.GONE);
+        AVLoadingIndicatorView avLoadingIndicatorView = findViewById(R.id.saving_avi);
+        avLoadingIndicatorView.setVisibility(View.VISIBLE);
 
         String filename = "Locations_LatLong";
         String filePath = getApplicationContext().getFilesDir().getPath() + File.separator + filename + ".txt";
@@ -521,12 +556,71 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(TrackingActivity.this, "Your upload is finished!", Toast.LENGTH_SHORT).show();
+                AVLoadingIndicatorView avLoadingIndicatorView = findViewById(R.id.saving_avi);
+                avLoadingIndicatorView.setVisibility(View.GONE);
+                LinearLayout linearLayout = findViewById(R.id.lin_lay);
+                Snackbar.make(linearLayout, "Your upload is finished!", Snackbar.LENGTH_LONG).show();
             }
         });
+    }
 
-        Button save = (Button) findViewById(R.id.save);
-        save.setVisibility(View.GONE);
+    private class loadLocations extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String filePath = strings[0];
+            File file = new File(filePath);
+            String result = "1";
+            try {
+                FileReader filereader = new FileReader(file);
+                BufferedReader bufferedReader = new BufferedReader(filereader);
+                String line;
+                try {
+                    while ((line = bufferedReader.readLine()) != null) {
+                        try {
+                            String[] temp = line.split(",");
+                            if (!temp[0].isEmpty()) {
+                                LatLng temp2 = new LatLng(Double.parseDouble(temp[0])
+                                        , Double.parseDouble(temp[1]));
+                                result = line;
+                                if (!polyline_added) {
+                                    prev = temp2;
+                                    polyline_added = true;
+                                }
+                                mPolylineOptions.add(prev, temp2);
+                                prev = temp2;
+                            }
+                        } catch (Exception e) {
+                            Log.e("Exception: %s", e.getMessage());
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                bufferedReader.close();
+                filereader.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return result;
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result.length() > 2) {
+                String[] temp = result.split(",");
+                LatLng camera = new LatLng(Double.parseDouble(temp[0])
+                        , Double.parseDouble(temp[1]));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        camera, DEFAULT_ZOOM));
+            }
+            mPolylineOptions.visible(true);
+            mPolyline = mMap.addPolyline(mPolylineOptions);
+            RelativeLayout rl = findViewById(R.id.relative_layout);
+            rl.setVisibility(View.GONE);
+        }
     }
 
 }

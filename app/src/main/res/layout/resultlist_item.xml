@@ -23,9 +23,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
             android:orientation="vertical">
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <TextView
                 android:id="@+id/item_date"
                 style="@style/DateText"
                 android:layout_width="match_parent"
@@ -37,20 +38,22 @@
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
-                <com.devspark.robototextview.widget.RobotoTextView
+                <TextView
                     android:id="@+id/item_distance"
                     style="@style/DefaultText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textColor="@color/blue_darker" />
+                    android:textColor="@color/blue_darker"
+                    android:textSize="24sp" />
 
-                <com.devspark.robototextview.widget.RobotoTextView
+                <TextView
                     android:id="@+id/item_time"
                     style="@style/DefaultText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:textColor="@color/blue_darker" />
 
             </LinearLayout>
 
@@ -62,6 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:contentDescription="@string/divider"
         android:src="@drawable/simple_divider" />
 
 </LinearLayout>

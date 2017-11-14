@@ -1,7 +1,5 @@
 package com.example.olahbence.sporttracker.Result.Result;
 
-//TODO PagerStrip
-
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -16,9 +14,6 @@ import java.io.File;
 
 public class ResultActivity extends AppCompatActivity {
 
-    private ViewPager pager;
-    private PagerAdapter pagerAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +21,7 @@ public class ResultActivity extends AppCompatActivity {
         if (extras != null) {
             String value = extras.getString("Date");
             setContentView(R.layout.result_pager);
-            Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+            Toolbar myToolbar = findViewById(R.id.toolbar);
             setSupportActionBar(myToolbar);
             getSupportActionBar().setTitle(value);
         }
@@ -36,8 +31,8 @@ public class ResultActivity extends AppCompatActivity {
         // Enable the Up button
         ab.setDisplayHomeAsUpEnabled(true);
 
-        pager = (ViewPager) findViewById(R.id.pager);
-        pagerAdapter = new FragmentAdapter(getSupportFragmentManager());
+        ViewPager pager = findViewById(R.id.pager);
+        PagerAdapter pagerAdapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
 
         pagerAdapter.notifyDataSetChanged();

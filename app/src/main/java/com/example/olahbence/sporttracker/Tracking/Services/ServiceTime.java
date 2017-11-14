@@ -1,7 +1,5 @@
 package com.example.olahbence.sporttracker.Tracking.Services;
 
-//TODO do back
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.Handler;

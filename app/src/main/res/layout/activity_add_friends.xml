@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="250dp"
-    android:layout_height="130dp"
-    android:orientation="vertical"
-    tools:context="com.example.olahbence.sporttracker.Friends.Search.AddFriends">
+    android:layout_height="wrap_content"
+    android:background="@color/blue"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/add_friends"
+        style="@style/DefaultText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/do_you_want_to_add" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/do_you_want_to_add"
+        android:textColor="@color/white" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -22,16 +26,27 @@
 
         <Button
             android:id="@+id/btnAdd"
+            style="@style/DefaultText"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:background="@color/blue_darker"
             android:onClick="Add"
-            android:text="@string/add" />
+            android:text="@string/add"
+            android:textColor="@color/cian"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <Button
+            style="@style/DefaultText"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_marginStart="24dp"
+            android:background="@color/blue_darker"
             android:onClick="Cancel"
-            android:text="@string/cancel" />
+            android:text="@string/cancel"
+            android:textColor="@color/cian"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

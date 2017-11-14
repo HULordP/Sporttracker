@@ -27,6 +27,7 @@ public class AddFriends extends AppCompatActivity {
     private String email;
     private String name;
     private Button btnAdd;
+    private TextView tw;
     private List<MyFriendsRow> friends;
 
     private ValueEventListener getFriends = new ValueEventListener() {
@@ -39,8 +40,10 @@ public class AddFriends extends AppCompatActivity {
             int index = friends.size();
             for (int i = 0; i < index; i++) {
                 MyFriendsRow myFriendsRow = friends.get(i);
-                if (email.equals(myFriendsRow.getEmail()))
+                if (email.equals(myFriendsRow.getEmail())) {
+                    tw.setText(R.string.already);
                     btnAdd.setVisibility(View.GONE);
+                }
             }
         }
 
@@ -54,24 +57,26 @@ public class AddFriends extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friends);
-        TextView tw = (TextView) findViewById(R.id.add_friends);
+        tw = findViewById(R.id.add_friends);
         friends = new ArrayList<>();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             email = extras.getString("email");
             name = extras.getString("name");
-            tw.setText(tw.getText() + "\n" + email + "\nto your friends?");
             IDToAdd = extras.getString("ID");
         }
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        btnAdd = (Button) findViewById(R.id.btnAdd);
+        btnAdd = findViewById(R.id.btnAdd);
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference myRef = mDatabase.getReference("Friends");
         String ID = user.getUid();
         myRef.child(ID).addValueEventListener(getFriends);
         if (ID.equals(IDToAdd)) {
+            tw.setText(R.string.cant);
             btnAdd.setVisibility(View.GONE);
+        } else {
+            tw.append("\n" + email + "\nto your friends?");
         }
     }
 
@@ -88,6 +93,7 @@ public class AddFriends extends AppCompatActivity {
         myRef.child(IDToAdd).child(ID).child("email").setValue(user.getEmail());
         myRef.child(IDToAdd).child(ID).child("name").setValue(user.getDisplayName());
         myRef.child(IDToAdd).child(ID).child("connected").setValue("false");
+        setResult(1);
         finish();
     }
 

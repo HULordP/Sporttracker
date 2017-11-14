@@ -20,6 +20,11 @@
             android:checked="false"
             android:icon="@drawable/ic_people_black_24dp"
             android:title="@string/friends" />
+        <item
+            android:id="@+id/friends_results"
+            android:checked="false"
+            android:icon="@drawable/ic_poll_black_24dp"
+            android:title="@string/friends_activities" />
     </group>
 
     <group
