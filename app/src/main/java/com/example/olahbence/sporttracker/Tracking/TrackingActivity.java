@@ -1,7 +1,5 @@
 package com.example.olahbence.sporttracker.Tracking;
 
-//TODO javít notification
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -204,7 +202,7 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
             long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
             aux2 = getString(R.string.time);
             toDisplay = aux2 + "\n" + TimeUnit.SECONDS.toMinutes(timeSecond) + " : "
-                    + timeSecond % 60 + "s";
+                    + timeSecond % 60;
             mTime.setText(toDisplay);
         }
     };

@@ -159,7 +159,11 @@ public class DistanceFragment extends Fragment implements OnMapReadyCallback {
         protected void onPostExecute(ArrayList<String> result) {
             super.onPostExecute(result);
             time.append("\n" + result.get(0));
-            distance.append("\n" + result.get(1) + " km");
+            if (Double.parseDouble(result.get(1)) > 0.1) {
+                distance.append("\n" + result.get(1) + " km");
+            } else {
+                distance.append("\n" + "0 km");
+            }
             if (result.size() > 2) {
                 String[] temp = result.get(2).split(",");
                 LatLng camera = new LatLng(Double.parseDouble(temp[0])

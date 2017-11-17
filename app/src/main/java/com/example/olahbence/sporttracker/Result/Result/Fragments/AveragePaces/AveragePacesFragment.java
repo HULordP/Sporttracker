@@ -1,4 +1,4 @@
-package com.example.olahbence.sporttracker.Result.Result.Fragments;
+package com.example.olahbence.sporttracker.Result.Result.Fragments.AveragePaces;
 
 
 import android.os.AsyncTask;
@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.olahbence.sporttracker.R;
-import com.example.olahbence.sporttracker.Result.Result.ResultAdapter;
-import com.example.olahbence.sporttracker.Result.Result.ResultRow;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,9 +22,9 @@ import java.util.List;
 
 public class AveragePacesFragment extends Fragment {
 
-    private ResultAdapter mAdapter;
+    private AveragePaceAdapter mAdapter;
 
-    private List<ResultRow> input;
+    private List<AveragePaceRow> input;
     private RecyclerView mRecyclerView;
 
     public AveragePacesFragment() {
@@ -55,7 +53,7 @@ public class AveragePacesFragment extends Fragment {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         input = new ArrayList<>();
-        mAdapter = new ResultAdapter(input);
+        mAdapter = new AveragePaceAdapter(input);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -80,9 +78,9 @@ public class AveragePacesFragment extends Fragment {
                                 String[] averagePace = line.split(",");
                                 int size = averagePace.length;
                                 for (int ii = 0; ii < size; ii++) {
-                                    ResultRow resultRow = new ResultRow(averagePace[ii]);
-                                    resultRow.setNumber(Integer.toString(ii + 1) + ". km");
-                                    input.add(resultRow);
+                                    AveragePaceRow averagePaceRow = new AveragePaceRow(averagePace[ii]);
+                                    averagePaceRow.setNumber(Integer.toString(ii + 1) + ". km");
+                                    input.add(averagePaceRow);
                                 }
                             }
                             if (line.length() == 0) {

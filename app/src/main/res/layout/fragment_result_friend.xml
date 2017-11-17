@@ -31,7 +31,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/email"
@@ -47,7 +47,6 @@
             style="@style/DefaultText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:textColor="@color/blue_darker"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -68,7 +67,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView

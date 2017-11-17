@@ -181,8 +181,18 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.olahbence.sporttracker.Tracking.TrackingActivity" />
-
         </activity>
+        <activity
+            android:name=".MainMenu.NoSignalStart"
+            android:label="Weak GPS"
+            android:parentActivityName=".MainMenu.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitleDialog">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.olahbence.sporttracker.MainMenu.MainActivity" />
+        </activity>
+        <activity android:name=".Result.Result.Fragments.Post.PostRow"></activity>
     </application>
 
 </manifest>

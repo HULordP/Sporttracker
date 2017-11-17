@@ -45,4 +45,5 @@ public class ResultActivity extends AppCompatActivity {
         File toDelete = new File(filePath);
         boolean b = toDelete.delete();
     }
+
 }

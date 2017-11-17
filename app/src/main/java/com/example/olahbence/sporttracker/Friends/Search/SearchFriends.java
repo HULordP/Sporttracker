@@ -107,7 +107,7 @@ public class SearchFriends extends AppCompatActivity implements FriendsSearchAda
         mAdapter.notifyDataSetChanged();
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = mDatabase.getReference("Users");
+        final DatabaseReference myRef = mDatabase.getReference("Users");
         myRef.orderByChild("email").startAt(search).endAt(search + "\uff8f").addChildEventListener(searchFriend);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -117,6 +117,7 @@ public class SearchFriends extends AppCompatActivity implements FriendsSearchAda
                     avi.setVisibility(View.GONE);
                     tvNoResult.setVisibility(View.VISIBLE);
                 }
+                myRef.removeEventListener(searchFriend);
             }
         }, 10000);
     }

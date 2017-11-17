@@ -62,9 +62,14 @@ public class ServiceLocation extends Service {
             mTimeTime = intent.getLongExtra(ServiceTime.KEY_TIME, 0);
 
             long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
-            String toDisplay = TimeUnit.SECONDS.toMinutes(timeSecond) + " : " + timeSecond % 60 + "s";
-            updateNotification("Distance: " + f1 / 1000 + " km" + "   " +
-                    "Time: " + toDisplay);
+            String toDisplay = TimeUnit.SECONDS.toMinutes(timeSecond) + " : " + timeSecond % 60;
+            if (f1 / 1000 > 0.1) {
+                updateNotification("Distance: " + f1 / 1000 + " km" + "   " +
+                        "Time: " + toDisplay);
+            } else {
+                updateNotification("Distance: " + 0 + " km" + "   " +
+                        "Time: " + toDisplay);
+            }
         }
     };
     private BroadcastReceiver mRestartReceiver = new BroadcastReceiver() {

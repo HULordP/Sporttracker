@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.olahbence.sporttracker.Friends.MyFriends.MyFriendsRow;
@@ -29,7 +30,7 @@ public class AddFriends extends AppCompatActivity {
     private Button btnAdd;
     private TextView tw;
     private List<MyFriendsRow> friends;
-
+    private RelativeLayout rl;
     private ValueEventListener getFriends = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -38,12 +39,23 @@ public class AddFriends extends AppCompatActivity {
                 friends.add(myFriend);
             }
             int index = friends.size();
+            boolean friend_state = false;
             for (int i = 0; i < index; i++) {
                 MyFriendsRow myFriendsRow = friends.get(i);
                 if (email.equals(myFriendsRow.getEmail())) {
                     tw.setText(R.string.already);
                     btnAdd.setVisibility(View.GONE);
+                    friend_state = true;
+                    RelativeLayout rl = findViewById(R.id.relative_layout);
+                    rl.setVisibility(View.GONE);
                 }
+            }
+
+            if (!friend_state) {
+                tw.append("\n" + email + "\nto your friends?");
+                btnAdd.setVisibility(View.VISIBLE);
+                rl = findViewById(R.id.relative_layout);
+                rl.setVisibility(View.GONE);
             }
         }
 
@@ -57,7 +69,10 @@ public class AddFriends extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_friends);
+        rl = findViewById(R.id.relative_layout);
+        rl.setVisibility(View.VISIBLE);
         tw = findViewById(R.id.add_friends);
+        tw.setText("");
         friends = new ArrayList<>();
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -68,15 +83,18 @@ public class AddFriends extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         btnAdd = findViewById(R.id.btnAdd);
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = mDatabase.getReference("Friends");
+        btnAdd.setVisibility(View.GONE);
         String ID = user.getUid();
-        myRef.child(ID).addValueEventListener(getFriends);
+
         if (ID.equals(IDToAdd)) {
             tw.setText(R.string.cant);
             btnAdd.setVisibility(View.GONE);
+            rl = findViewById(R.id.relative_layout);
+            rl.setVisibility(View.GONE);
         } else {
-            tw.append("\n" + email + "\nto your friends?");
+            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = mDatabase.getReference("Friends");
+            myRef.child(ID).addListenerForSingleValueEvent(getFriends);
         }
     }
 

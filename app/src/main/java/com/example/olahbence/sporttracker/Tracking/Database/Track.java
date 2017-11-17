@@ -9,6 +9,7 @@ public class Track {
     public String distance;
     public String filename;
     public String time;
+    public String postID;
 
     public Track() {
     }
@@ -57,4 +58,11 @@ public class Track {
         this.time = time;
     }
 
+    public String getPostID() {
+        return postID;
+    }
+
+    public void setPostID(String postID) {
+        this.postID = postID;
+    }
 }

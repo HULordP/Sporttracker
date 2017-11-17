@@ -46,12 +46,12 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
     private List<ResultsListRow> allTrack;
     private List<Track> trackList;
     private int index;
-    private DatabaseReference myRef;
     private ValueEventListener trackListener = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 Track track = childSnapshot.getValue(Track.class);
+                track.setKey(childSnapshot.getKey());
                 trackList.add(track);
                 Date date = new Date(track.getDate());
                 android.text.format.DateFormat df = new android.text.format.DateFormat();
@@ -64,6 +64,8 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
             Collections.reverse(allTrack);
             Collections.reverse(trackList);
             while (index != 10) {
+                if (allTrack.size() == index)
+                    break;
                 input.add(allTrack.get(index));
                 index++;
             }
@@ -76,6 +78,8 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
                         if (index + 1 != allTrack.size()) {
                             int temp = 5;
                             while (temp != 0) {
+                                if (allTrack.size() < 6)
+                                    break;
                                 if (allTrack.size() == index + 1) {
                                     input.add(allTrack.get(index));
                                     break;
@@ -102,7 +106,6 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
         }
     };
-    private File downloadedFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,8 +135,8 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = mAuth.getCurrentUser();
-        myRef = mDatabase.getReference("Tracks").child(fUser.getUid());
-        myRef.addValueEventListener(trackListener);
+        DatabaseReference myRef = mDatabase.getReference("Tracks").child(fUser.getUid());
+        myRef.addListenerForSingleValueEvent(trackListener);
 
     }
 
@@ -145,7 +148,7 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(final int position) {
         RelativeLayout rl = findViewById(R.id.relative_layout);
         rl.setVisibility(View.VISIBLE);
         Track track = trackList.get(position);
@@ -161,13 +164,14 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         StorageReference trackTxtRef = storageRef.child("Tracks" + File.separator + filename + ".txt");
 
         String filePath = getApplicationContext().getFilesDir().getPath() + File.separator + "track.txt";
-        downloadedFile = new File(filePath);
+        File downloadedFile = new File(filePath);
         trackTxtRef.getFile(downloadedFile).addOnSuccessListener
                 (new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                         Intent i = new Intent(ResultsListActivity.this, ResultActivity.class);
                         i.putExtra("Date", toSend);
+                        i.putExtra("Key", trackList.get(position).getKey());
                         i.putExtra("Identity", "ResultListActivity");
                         startActivity(i);
                     }
@@ -176,11 +180,5 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
             public void onFailure(@NonNull Exception exception) {
             }
         });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        myRef.removeEventListener(trackListener);
     }
 }

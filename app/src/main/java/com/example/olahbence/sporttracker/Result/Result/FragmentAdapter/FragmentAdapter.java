@@ -4,12 +4,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.olahbence.sporttracker.Result.Result.Fragments.AveragePacesFragment;
+import com.example.olahbence.sporttracker.Result.Result.Fragments.AveragePaces.AveragePacesFragment;
 import com.example.olahbence.sporttracker.Result.Result.Fragments.DistanceFragment;
+import com.example.olahbence.sporttracker.Result.Result.Fragments.Post.PostsFragment;
 
 public class FragmentAdapter extends FragmentPagerAdapter {
 
-    private static final int NUM_PAGES = 2;
+    private static final int NUM_PAGES = 3;
 
     public FragmentAdapter(FragmentManager manager) {
         super(manager);
@@ -22,6 +23,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
                 return new DistanceFragment();
             case 1:
                 return new AveragePacesFragment();
+            case 2:
+                return new PostsFragment();
             default:
                 return new DistanceFragment();
         }
@@ -39,6 +42,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
                 return "Map";
             case 1:
                 return "Average paces";
+            case 2:
+                return "Posts";
             default:
                 return "Map";
         }

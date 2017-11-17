@@ -71,4 +71,13 @@
     <string name="no_user_found_with_that_email">No user found with that email!</string>
     <string name="your_email">Your email</string>
     <string name="header_image">Header image</string>
+    <string name="your_gps_signal_is_weak_dou_you_still_want_to_start_your_activity">Your GPS signal is weak. Dou you still want to start your activity?</string>
+    <string name="start">Start</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="posts">Posts</string>
+    <string name="no_posts_for_this_track">No posts for this track</string>
+    <string name="what_s_in_your_mind">What\'s in your mind?</string>
+    <string name="send_post">Send post</string>
 </resources>

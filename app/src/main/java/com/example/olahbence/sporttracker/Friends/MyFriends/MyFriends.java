@@ -33,9 +33,7 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
     private List<MyFriendsRow> input;
     private RecyclerView mRecyclerView;
     private MyFriendsAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private List<String> IDs;
-    private UserDatas myFriend;
     private int aux;
     private ValueEventListener getFriends = new ValueEventListener() {
         @Override
@@ -64,7 +62,7 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
     private ValueEventListener getData = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            myFriend = dataSnapshot.getValue(UserDatas.class);
+            UserDatas myFriend = dataSnapshot.getValue(UserDatas.class);
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
             String ID = user.getUid();
@@ -101,7 +99,7 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        mLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -131,7 +129,7 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         String ID = user.getUid();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference myRef = mDatabase.getReference("Friends");
-        myRef.child(ID).addValueEventListener(getFriends);
+        myRef.child(ID).addListenerForSingleValueEvent(getFriends);
     }
 
     @Override
@@ -144,7 +142,7 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         DatabaseReference myRef = mDatabase.getReference("Friends");
         myRef.child(ID).child(IDs.get(position)).child("connected").setValue("true");
         DatabaseReference myRef2 = mDatabase.getReference("Users");
-        myRef2.child(IDs.get(position)).addValueEventListener(getData);
+        myRef2.child(IDs.get(position)).addListenerForSingleValueEvent(getData);
         showText("Adding was successful");
     }
 

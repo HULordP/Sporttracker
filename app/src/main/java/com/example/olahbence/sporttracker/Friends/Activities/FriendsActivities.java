@@ -46,6 +46,7 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
     private LinearLayoutManager mLayoutManager;
     private List<FriendsActivitiesRow> input;
     private List<UserDatas> users;
+    private List<String> userKeys;
     private List<Track> trackList;
     private int index = 0;
     private List<FriendsActivitiesRow> allTrack;
@@ -56,6 +57,7 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 Track track = childSnapshot.getValue(Track.class);
+                track.setKey(childSnapshot.getKey());
                 trackList.add(track);
                 Date date = new Date(track.getDate());
                 android.text.format.DateFormat df = new android.text.format.DateFormat();
@@ -64,12 +66,14 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
                 FriendsActivitiesRow current =
                         new FriendsActivitiesRow(users.get(i).getEmail(), users.get(i).getName(),
                                 dateToDisplay, String.format("%.2f", distanceToUpload) + " km", track.getTime());
+                userKeys.add(users.get(i).getId());
                 allTrack.add(current);
             }
             if (allTrack.size() > 1)
                 sortActivites(allTrack);
             Collections.reverse(allTrack);
             Collections.reverse(trackList);
+            Collections.reverse(userKeys);
             while (index != 10) {
                 if (allTrack.size() == index)
                     break;
@@ -121,7 +125,7 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
                 users.add(ud);
                 FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
                 DatabaseReference myRef2 = mDatabase.getReference("Tracks");
-                myRef2.child(users.get(ii).getId()).addValueEventListener(getTracks);
+                myRef2.child(users.get(ii).getId()).addListenerForSingleValueEvent(getTracks);
                 ii++;
             }
         }
@@ -155,6 +159,7 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
         allTrack = new ArrayList<>();
         trackList = new ArrayList<>();
         users = new ArrayList<>();
+        userKeys = new ArrayList<>();
         mAdapter = new FriendsActivitesAdapter(input, this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -173,7 +178,7 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         DatabaseReference myRef = mDatabase.getReference("Connections");
-        myRef.child(user.getUid()).addValueEventListener(getConnections);
+        myRef.child(user.getUid()).addListenerForSingleValueEvent(getConnections);
     }
 
     private void sortActivites(List<FriendsActivitiesRow> a) {
@@ -197,10 +202,12 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
                     FriendsActivitiesRow t = a.get(temp);
                     a.set(temp, a.get(k));
                     a.set(k, t);
-                    Track tt = new Track();
-                    tt = trackList.get(temp);
+                    Track tt = trackList.get(temp);
                     trackList.set(temp, trackList.get(k));
                     trackList.set(k, tt);
+                    String ttt = userKeys.get(temp);
+                    userKeys.set(temp, userKeys.get(k));
+                    userKeys.set(k, ttt);
                 }
             }
     }
@@ -233,6 +240,8 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
                         i.putExtra("Name", input.get(position).getName());
                         i.putExtra("Email", input.get(position).getEmail());
                         i.putExtra("Identity", "FriendsActivities");
+                        i.putExtra("Key", trackList.get(position).getKey());
+                        i.putExtra("UserKey", userKeys.get(position));
                         startActivity(i);
                     }
                 }).addOnFailureListener(new OnFailureListener() {

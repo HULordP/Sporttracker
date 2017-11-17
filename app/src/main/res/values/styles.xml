@@ -2,6 +2,7 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:colorPrimaryDark">@color/blue_darker</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
     </style>
 
     <style name="NoTextStyle">

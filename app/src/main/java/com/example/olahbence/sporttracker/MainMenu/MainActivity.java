@@ -1,5 +1,4 @@
 package com.example.olahbence.sporttracker.MainMenu;
-//TODO remove ValueEventListeners!!!!!!!!!!!!!!
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,7 +21,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.olahbence.sporttracker.Friends.Activities.FriendsActivities;
@@ -67,10 +65,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int fixSatelliteCount;
     private String mSatellite;
     private String mSatelliteFix;
-    private String[] mPlanetTitles;
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
     private NavigationView navigationView;
+    private boolean isGpsFixed = false;
 
 
     @Override
@@ -177,9 +174,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (mLastKnownLocation.getSpeed() != 0) {
                         String toDisplay = aux + " yes";
                         gpsFix.setText(toDisplay);
+                        isGpsFixed = true;
                     } else {
                         String toDisplay = aux + " no";
                         gpsFix.setText(toDisplay);
+                        isGpsFixed = false;
                     }
                 }
             }
@@ -328,9 +327,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void startTrack(View view) {
-        mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
-        Intent i = new Intent(MainActivity.this, TrackingActivity.class);
-        startActivity(i);
+        if (isGpsFixed) {
+            mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+            Intent i = new Intent(MainActivity.this, TrackingActivity.class);
+            startActivity(i);
+        } else {
+            mFusedLocationProviderClient.removeLocationUpdates(mLocationCallback);
+            Intent i = new Intent(MainActivity.this, NoSignalStart.class);
+            startActivity(i);
+        }
     }
 
     protected void createLocationRequest() {
