@@ -10,12 +10,12 @@ import com.example.olahbence.sporttracker.R;
 
 import java.util.List;
 
-public class FriendsActivitesAdapter extends RecyclerView.Adapter<FriendsActivitesAdapter.ViewHolder> {
+public class FriendsActivitiesAdapter extends RecyclerView.Adapter<FriendsActivitiesAdapter.ViewHolder> {
     private List<FriendsActivitiesRow> values;
     private OnItemClicked onClick;
 
-    public FriendsActivitesAdapter(List<FriendsActivitiesRow> myDataset, OnItemClicked click) {
-        values = myDataset;
+    FriendsActivitiesAdapter(List<FriendsActivitiesRow> myDataSet, OnItemClicked click) {
+        values = myDataSet;
         onClick = click;
     }
 
@@ -24,34 +24,28 @@ public class FriendsActivitesAdapter extends RecyclerView.Adapter<FriendsActivit
         notifyItemInserted(position);
     }
 
-    public void remove(int position) {
-        values.remove(position);
-        notifyItemRemoved(position);
-    }
-
     @Override
-    public FriendsActivitesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                                 int viewType) {
+    public FriendsActivitiesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                                  int viewType) {
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         View v =
                 inflater.inflate(R.layout.friends_activities_item, parent, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final FriendsActivitiesRow friendsActivitiesRow = values.get(position);
         holder.txtEmail.setText(friendsActivitiesRow.getEmail());
         holder.txtName.setText(friendsActivitiesRow.getName());
-        holder.txtDate.setText(friendsActivitiesRow.getmDate());
-        holder.txtTime.setText(friendsActivitiesRow.getmTime());
-        holder.txtDistance.setText(friendsActivitiesRow.getmDistance());
+        holder.txtDate.setText(friendsActivitiesRow.getDate());
+        holder.txtTime.setText(friendsActivitiesRow.getTime());
+        holder.txtDistance.setText(friendsActivitiesRow.getDistance());
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClick.onItemClick(position);
+                onClick.onItemClick(holder.getAdapterPosition());
             }
         });
     }
@@ -66,21 +60,21 @@ public class FriendsActivitesAdapter extends RecyclerView.Adapter<FriendsActivit
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtEmail;
-        public TextView txtName;
-        public TextView txtDate;
-        public TextView txtTime;
-        public TextView txtDistance;
         public View layout;
+        TextView txtEmail;
+        TextView txtName;
+        TextView txtDate;
+        TextView txtTime;
+        TextView txtDistance;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             layout = v;
-            txtEmail = (TextView) v.findViewById(R.id.item_email);
-            txtName = (TextView) v.findViewById(R.id.item_name);
-            txtDate = (TextView) v.findViewById(R.id.item_date);
-            txtTime = (TextView) v.findViewById(R.id.item_time);
-            txtDistance = (TextView) v.findViewById(R.id.item_distance);
+            txtEmail = v.findViewById(R.id.item_email);
+            txtName = v.findViewById(R.id.item_name);
+            txtDate = v.findViewById(R.id.item_date);
+            txtTime = v.findViewById(R.id.item_time);
+            txtDistance = v.findViewById(R.id.item_distance);
         }
     }
 

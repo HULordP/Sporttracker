@@ -37,13 +37,15 @@ public class PostsFragment extends Fragment {
     private RecyclerView posts;
     private ImageButton btnSend;
     private EditText etPost;
+    private int index = 0;
+    private boolean startedGetMessages = false;
     private DatabaseReference myRef;
     private DatabaseReference myRef2;
-    private DatabaseReference myRef3;
     private String trackKey;
     private String userKey;
     private boolean fromResult;
     private List<PostRow> input;
+    private List<PostRow> allPost;
     private PostAdapter postAdapter;
     private ValueEventListener getMessages = new ValueEventListener() {
         @Override
@@ -51,10 +53,43 @@ public class PostsFragment extends Fragment {
             input.clear();
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 PostRow postRow = childSnapshot.getValue(PostRow.class);
-                input.add(postRow);
+                allPost.add(postRow);
             }
             Collections.reverse(input);
+            while (index != 10) {
+                if (allPost.size() == index)
+                    break;
+                input.add(allPost.get(index));
+                index++;
+            }
             postAdapter.notifyDataSetChanged();
+            posts.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
+                        if (index + 1 != allPost.size()) {
+                            int temp = 5;
+                            while (temp != 0) {
+                                if (allPost.size() < 6)
+                                    break;
+                                if (allPost.size() == index + 1) {
+                                    input.add(allPost.get(index));
+                                    break;
+                                }
+                                input.add(allPost.get(index));
+                                index++;
+                                temp--;
+                            }
+                            recyclerView.post(new Runnable() {
+                                public void run() {
+                                    postAdapter.notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    }
+                }
+            });
         }
 
         @Override
@@ -66,13 +101,17 @@ public class PostsFragment extends Fragment {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             Track track = dataSnapshot.getValue(Track.class);
-            if (track.getPostID() != null) {
-                FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-                myRef2 = mDatabase.getReference("Posts").child(track.getPostID());
-                myRef2.addValueEventListener(getMessages);
-                twNoPosts.setVisibility(View.GONE);
-            } else {
-                twNoPosts.setVisibility(View.VISIBLE);
+            if (track != null) {
+                if (track.getPostID() != null) {
+                    FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                    myRef2 = mDatabase.getReference("Posts").child(track.getPostID());
+                    myRef2.addValueEventListener(getMessages);
+                    if (!startedGetMessages)
+                        startedGetMessages = true;
+                    twNoPosts.setVisibility(View.GONE);
+                } else {
+                    twNoPosts.setVisibility(View.VISIBLE);
+                }
             }
         }
 
@@ -85,29 +124,35 @@ public class PostsFragment extends Fragment {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             Track track = dataSnapshot.getValue(Track.class);
-            if (track.getPostID() == null) {
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                FirebaseUser fUser = mAuth.getCurrentUser();
-                FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-                DatabaseReference ref2 = mDatabase.getReference("Posts").push();
-                String pushId = ref2.getKey();
-                String pushId2 = ref2.child(pushId).push().getKey();
-                ref2.child(pushId2).child("username").setValue(fUser.getDisplayName());
-                ref2.child(pushId2).child("message").setValue(etPost.getText().toString());
-                ref2.child(pushId2).child("date").setValue(Calendar.getInstance().getTimeInMillis());
-                ref2.child(pushId2).child("email").setValue(fUser.getEmail());
-                myRef.child("postID").setValue(pushId);
-            } else {
-                String postId = track.getPostID();
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                FirebaseUser fUser = mAuth.getCurrentUser();
-                FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-                DatabaseReference ref2 = mDatabase.getReference("Posts").child(postId);
-                String pushId = ref2.push().getKey();
-                ref2.child(pushId).child("username").setValue(fUser.getDisplayName());
-                ref2.child(pushId).child("message").setValue(etPost.getText().toString());
-                ref2.child(pushId).child("date").setValue(Calendar.getInstance().getTimeInMillis());
-                ref2.child(pushId).child("email").setValue(fUser.getEmail());
+            if (track != null) {
+                if (track.getPostID() == null) {
+                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser fUser = mAuth.getCurrentUser();
+                    FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference ref2 = mDatabase.getReference("Posts").push();
+                    String pushId = ref2.getKey();
+                    String pushId2 = ref2.child(pushId).push().getKey();
+                    if (fUser != null) {
+                        ref2.child(pushId2).child("username").setValue(fUser.getDisplayName());
+                        ref2.child(pushId2).child("message").setValue(etPost.getText().toString());
+                        ref2.child(pushId2).child("date").setValue(Calendar.getInstance().getTimeInMillis());
+                        ref2.child(pushId2).child("email").setValue(fUser.getEmail());
+                        myRef.child("postID").setValue(pushId);
+                    }
+                } else {
+                    String postId = track.getPostID();
+                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                    FirebaseUser fUser = mAuth.getCurrentUser();
+                    FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference ref2 = mDatabase.getReference("Posts").child(postId);
+                    String pushId = ref2.push().getKey();
+                    if (fUser != null) {
+                        ref2.child(pushId).child("username").setValue(fUser.getDisplayName());
+                        ref2.child(pushId).child("message").setValue(etPost.getText().toString());
+                        ref2.child(pushId).child("date").setValue(Calendar.getInstance().getTimeInMillis());
+                        ref2.child(pushId).child("email").setValue(fUser.getEmail());
+                    }
+                }
             }
             etPost.setText("");
         }
@@ -127,13 +172,15 @@ public class PostsFragment extends Fragment {
         Bundle extras = getActivity().getIntent().getExtras();
         if (extras != null) {
             String identity = extras.getString("Identity");
-            if (identity.equals("FriendsActivities")) {
-                trackKey = extras.getString("Key");
-                userKey = extras.getString("UserKey");
-                fromResult = false;
-            } else {
-                trackKey = extras.getString("Key");
-                fromResult = true;
+            if (identity != null) {
+                if (identity.equals("FriendsActivities")) {
+                    trackKey = extras.getString("Key");
+                    userKey = extras.getString("UserKey");
+                    fromResult = false;
+                } else {
+                    trackKey = extras.getString("Key");
+                    fromResult = true;
+                }
             }
         }
         input = new ArrayList<>();
@@ -152,14 +199,17 @@ public class PostsFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext());
         posts.setLayoutManager(mLayoutManager);
         postAdapter = new PostAdapter(input);
+        allPost = new ArrayList<>();
         posts.setAdapter(postAdapter);
 
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         if (fromResult) {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser fUser = mAuth.getCurrentUser();
-            myRef = mDatabase.getReference("Tracks").child(fUser.getUid()).child(trackKey);
-            myRef.addValueEventListener(getPostID);
+            if (fUser != null) {
+                myRef = mDatabase.getReference("Tracks").child(fUser.getUid()).child(trackKey);
+                myRef.addValueEventListener(getPostID);
+            }
         } else {
             myRef = mDatabase.getReference("Tracks").child(userKey).child(trackKey);
             myRef.addValueEventListener(getPostID);
@@ -178,8 +228,10 @@ public class PostsFragment extends Fragment {
                 if (fromResult) {
                     FirebaseAuth mAuth = FirebaseAuth.getInstance();
                     FirebaseUser fUser = mAuth.getCurrentUser();
-                    myRef = mDatabase.getReference("Tracks").child(fUser.getUid()).child(trackKey);
-                    myRef.addListenerForSingleValueEvent(sendMessage);
+                    if (fUser != null) {
+                        myRef = mDatabase.getReference("Tracks").child(fUser.getUid()).child(trackKey);
+                        myRef.addListenerForSingleValueEvent(sendMessage);
+                    }
                 } else {
                     myRef = mDatabase.getReference("Tracks").child(userKey).child(trackKey);
                     myRef.addListenerForSingleValueEvent(sendMessage);
@@ -191,7 +243,8 @@ public class PostsFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        myRef2.removeEventListener(getMessages);
+        if (startedGetMessages)
+            myRef2.removeEventListener(getMessages);
         myRef.removeEventListener(getPostID);
     }
 }

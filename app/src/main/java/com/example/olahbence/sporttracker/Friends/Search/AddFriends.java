@@ -24,7 +24,6 @@ import java.util.List;
 public class AddFriends extends AppCompatActivity {
 
     private String IDToAdd;
-    private String TAG;
     private String email;
     private String name;
     private Button btnAdd;
@@ -61,6 +60,7 @@ public class AddFriends extends AppCompatActivity {
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
+            String TAG = "";
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
         }
     };
@@ -84,44 +84,48 @@ public class AddFriends extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         btnAdd = findViewById(R.id.btnAdd);
         btnAdd.setVisibility(View.GONE);
-        String ID = user.getUid();
+        if (user != null) {
+            String ID = user.getUid();
 
-        if (ID.equals(IDToAdd)) {
-            tw.setText(R.string.cant);
-            btnAdd.setVisibility(View.GONE);
-            rl = findViewById(R.id.relative_layout);
-            rl.setVisibility(View.GONE);
-        } else {
-            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = mDatabase.getReference("Friends");
-            myRef.child(ID).addListenerForSingleValueEvent(getFriends);
+            if (ID.equals(IDToAdd)) {
+                tw.setText(R.string.cant);
+                btnAdd.setVisibility(View.GONE);
+                rl = findViewById(R.id.relative_layout);
+                rl.setVisibility(View.GONE);
+            } else {
+                FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = mDatabase.getReference("Friends");
+                myRef.child(ID).addListenerForSingleValueEvent(getFriends);
+            }
+
         }
-    }
-
-
-    public void Add(View view) {
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        String ID = user.getUid();
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = mDatabase.getReference("Friends");
-        myRef.child(ID).child(IDToAdd).child("email").setValue(email);
-        myRef.child(ID).child(IDToAdd).child("name").setValue(name);
-        myRef.child(ID).child(IDToAdd).child("connected").setValue("true");
-        myRef.child(IDToAdd).child(ID).child("email").setValue(user.getEmail());
-        myRef.child(IDToAdd).child(ID).child("name").setValue(user.getDisplayName());
-        myRef.child(IDToAdd).child(ID).child("connected").setValue("false");
-        setResult(1);
-        finish();
-    }
-
-    public void Cancel(View view) {
-        finish();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        finish();
+    }
+
+    public void Add(View view) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            String ID = user.getUid();
+            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = mDatabase.getReference("Friends");
+            myRef.child(ID).child(IDToAdd).child("email").setValue(email);
+            myRef.child(ID).child(IDToAdd).child("name").setValue(name);
+            myRef.child(ID).child(IDToAdd).child("connected").setValue("true");
+            myRef.child(IDToAdd).child(ID).child("email").setValue(user.getEmail());
+            myRef.child(IDToAdd).child(ID).child("name").setValue(user.getDisplayName());
+            myRef.child(IDToAdd).child(ID).child("connected").setValue("false");
+            setResult(1);
+        }
+        finish();
+    }
+
+    public void Cancel(View view) {
         finish();
     }
 }

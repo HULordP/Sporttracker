@@ -23,13 +23,12 @@ public class ResultActivity extends AppCompatActivity {
             setContentView(R.layout.result_pager);
             Toolbar myToolbar = findViewById(R.id.toolbar);
             setSupportActionBar(myToolbar);
-            getSupportActionBar().setTitle(value);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(value);
+                ActionBar ab = getSupportActionBar();
+                ab.setDisplayHomeAsUpEnabled(true);
+            }
         }
-
-        ActionBar ab = getSupportActionBar();
-
-        // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
 
         ViewPager pager = findViewById(R.id.pager);
         PagerAdapter pagerAdapter = new FragmentAdapter(getSupportFragmentManager());

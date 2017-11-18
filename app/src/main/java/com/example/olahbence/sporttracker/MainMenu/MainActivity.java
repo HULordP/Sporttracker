@@ -80,7 +80,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Main menu");
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle("Main menu");
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -88,16 +89,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (extras != null) {
             boolean showText = extras.getBoolean("Login", false);
             if (showText) {
-                String userName = user.getDisplayName();
-                String aux = "Welcome " + userName;
-                showText(aux);
+                if (user != null) {
+                    String userName = user.getDisplayName();
+                    String aux = "Welcome " + userName;
+                    showText(aux);
+                }
             }
         }
 
         navigationView = findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.isChecked()) menuItem.setChecked(false);
                 else menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
@@ -145,9 +148,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         View header = navigationView.getHeaderView(0);
         TextView name = header.findViewById(R.id.header_name);
-        name.setText(user.getDisplayName());
         TextView email = header.findViewById(R.id.header_email);
-        email.setText(user.getEmail());
+        if (user != null) {
+            name.setText(user.getDisplayName());
+            email.setText(user.getEmail());
+        }
 
 
         gpsFix = findViewById(R.id.gps_fixed);
@@ -207,7 +212,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         getLocationPermission();
         try {
             if (mLocationPermissionGranted) {
-                locManager.registerGnssStatusCallback(mGnssStatusCallback);
+                if (locManager != null) {
+                    locManager.registerGnssStatusCallback(mGnssStatusCallback);
+                }
             }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
@@ -309,8 +316,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             putMarker();
                             createLocationRequest();
                             startLocationUpdates();
-                        } else {
-                            //TBD
                         }
                     }
                 });

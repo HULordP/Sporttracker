@@ -15,7 +15,7 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.View
     private List<MyFriendsRow> values;
     private OnItemClicked onClick;
 
-    public MyFriendsAdapter(List<MyFriendsRow> myDataset, OnItemClicked click) {
+    MyFriendsAdapter(List<MyFriendsRow> myDataset, OnItemClicked click) {
         values = myDataset;
         onClick = click;
     }
@@ -25,11 +25,6 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.View
         notifyItemInserted(position);
     }
 
-    public void remove(int position) {
-        values.remove(position);
-        notifyItemRemoved(position);
-    }
-
     @Override
     public MyFriendsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                           int viewType) {
@@ -37,12 +32,11 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.View
                 parent.getContext());
         View v =
                 inflater.inflate(R.layout.my_friends_item, parent, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final MyFriendsRow resultRow = values.get(position);
         holder.txtEmail.setText(resultRow.getEmail());
         holder.txtName.setText(resultRow.getName());
@@ -53,13 +47,13 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.View
         holder.btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClick.onAddClick(position);
+                onClick.onAddClick(holder.getAdapterPosition());
             }
         });
         holder.btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClick.onClearClick(position);
+                onClick.onClearClick(holder.getAdapterPosition());
             }
         });
     }
@@ -76,19 +70,19 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtEmail;
-        public TextView txtName;
-        public ImageButton btnAdd;
-        public ImageButton btnClear;
         public View layout;
+        TextView txtEmail;
+        TextView txtName;
+        ImageButton btnAdd;
+        ImageButton btnClear;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             layout = v;
-            txtEmail = (TextView) v.findViewById(R.id.friends_result_item_email);
-            txtName = (TextView) v.findViewById(R.id.friends_result_item_name);
-            btnAdd = (ImageButton) v.findViewById(R.id.add);
-            btnClear = (ImageButton) v.findViewById(R.id.delete);
+            txtEmail = v.findViewById(R.id.friends_result_item_email);
+            txtName = v.findViewById(R.id.friends_result_item_name);
+            btnAdd = v.findViewById(R.id.add);
+            btnClear = v.findViewById(R.id.delete);
         }
     }
 

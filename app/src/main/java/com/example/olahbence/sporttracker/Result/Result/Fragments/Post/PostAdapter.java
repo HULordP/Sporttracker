@@ -24,11 +24,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         notifyItemInserted(position);
     }
 
-    public void remove(int position) {
-        values.remove(position);
-        notifyItemRemoved(position);
-    }
-
     @Override
     public PostAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                      int viewType) {
@@ -45,7 +40,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         holder.message.setText(postRow.getMessage());
         holder.username.setText(postRow.getUsername());
         Date date = new Date(postRow.getDate());
-        android.text.format.DateFormat df = new android.text.format.DateFormat();
         String dateToDisplay = DateFormat.format("MM-dd hh:mm a", date).toString();
         holder.date.setText(dateToDisplay);
         String toDisplay = "(" + postRow.getEmail() + ")";

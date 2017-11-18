@@ -56,7 +56,8 @@ public class LoginActivity extends AppCompatActivity {
                 setContentView(R.layout.activity_login);
                 Toolbar myToolbar = findViewById(R.id.toolbar);
                 setSupportActionBar(myToolbar);
-                getSupportActionBar().setTitle("Login");
+                if (getSupportActionBar() != null)
+                    getSupportActionBar().setTitle("Login");
                 mEmail = findViewById(R.id.email);
                 mPassword = findViewById(R.id.password);
             }
@@ -64,7 +65,8 @@ public class LoginActivity extends AppCompatActivity {
             setContentView(R.layout.activity_login);
             Toolbar myToolbar = findViewById(R.id.toolbar);
             setSupportActionBar(myToolbar);
-            getSupportActionBar().setTitle("Login");
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle("Login");
             mEmail = findViewById(R.id.email);
             mPassword = findViewById(R.id.password);
         }
@@ -97,13 +99,15 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
                             showText(getString(R.string.auth_failed));
                         } else {
-                            if (user.isEmailVerified()) {
-                                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                                i.putExtra("Login", true);
-                                startActivity(i);
-                                finish();
-                            } else {
-                                showText("Please verify your email");
+                            if (user != null) {
+                                if (user.isEmailVerified()) {
+                                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                    i.putExtra("Login", true);
+                                    startActivity(i);
+                                    finish();
+                                } else {
+                                    showText("Please verify your email");
+                                }
                             }
                         }
                     }

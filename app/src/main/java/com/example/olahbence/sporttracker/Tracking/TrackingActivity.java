@@ -216,10 +216,11 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
         main.getMapAsync(this);
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Tracking");
-        ActionBar ab = getSupportActionBar();
-
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Tracking");
+            ActionBar ab = getSupportActionBar();
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
         mTime = findViewById(R.id.time);
         mDistance = findViewById(R.id.distance);
@@ -498,68 +499,70 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
 
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        String ID = user.getUid();
-        long date = Calendar.getInstance().getTimeInMillis();
+        if (user != null) {
+            String ID = user.getUid();
+            long date = Calendar.getInstance().getTimeInMillis();
 
-        filename = ID + "_" + date;
-
-
-        String tracks;
-        tracks = filename;
-        Track toUploadTrack = new Track(tracks);
-        toUploadTrack.setDistance(String.valueOf(f1 / 1000));
-        long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
-        String timeToUpload = TimeUnit.SECONDS.toMinutes(timeSecond) + ":" + timeSecond % 60;
-        toUploadTrack.setTime(timeToUpload);
-
-        String key = mDatabase.getReference("Tracks").child(ID).push().getKey();
-        DatabaseReference myRef = mDatabase.getReference("Tracks").child(ID).child(key).child("filename");
-        myRef.setValue(toUploadTrack.getFilename());
-        myRef = mDatabase.getReference("Tracks").child(ID).child(key).child("date");
-        myRef.setValue(date);
-        myRef = mDatabase.getReference("Tracks").child(ID).child(key).child("distance");
-        myRef.setValue(toUploadTrack.getDistance());
-        myRef = mDatabase.getReference("Tracks").child(ID).child(key).child("time");
-        myRef.setValue(toUploadTrack.getTime());
+            filename = ID + "_" + date;
 
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference trackTxtRef = storageRef.child("Tracks" + File.separator + filename + ".txt");
+            String tracks;
+            tracks = filename;
+            Track toUploadTrack = new Track(tracks);
+            toUploadTrack.setDistance(String.valueOf(f1 / 1000));
+            long timeSecond = TimeUnit.MILLISECONDS.toSeconds(mTimeTime);
+            String timeToUpload = TimeUnit.SECONDS.toMinutes(timeSecond) + ":" + timeSecond % 60;
+            toUploadTrack.setTime(timeToUpload);
+
+            String key = mDatabase.getReference("Tracks").child(ID).push().getKey();
+            DatabaseReference myRef = mDatabase.getReference("Tracks").child(ID).child(key).child("filename");
+            myRef.setValue(toUploadTrack.getFilename());
+            myRef = mDatabase.getReference("Tracks").child(ID).child(key).child("date");
+            myRef.setValue(date);
+            myRef = mDatabase.getReference("Tracks").child(ID).child(key).child("distance");
+            myRef.setValue(toUploadTrack.getDistance());
+            myRef = mDatabase.getReference("Tracks").child(ID).child(key).child("time");
+            myRef.setValue(toUploadTrack.getTime());
 
 
-        Uri file = Uri.fromFile(mTrackUpload);
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            StorageReference trackTxtRef = storageRef.child("Tracks" + File.separator + filename + ".txt");
 
-        StorageMetadata metadata = new StorageMetadata.Builder()
-                .setContentType("text/plain")
-                .build();
 
-        UploadTask uploadTask = trackTxtRef.putFile(file, metadata);
+            Uri file = Uri.fromFile(mTrackUpload);
 
-        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                System.out.println("Upload is " + progress + "% done");
-            }
-        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("Upload is paused");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                AVLoadingIndicatorView avLoadingIndicatorView = findViewById(R.id.saving_avi);
-                avLoadingIndicatorView.setVisibility(View.GONE);
-                LinearLayout linearLayout = findViewById(R.id.lin_lay);
-                Snackbar.make(linearLayout, "Your upload is finished!", Snackbar.LENGTH_LONG).show();
-            }
-        });
+            StorageMetadata metadata = new StorageMetadata.Builder()
+                    .setContentType("text/plain")
+                    .build();
+
+            UploadTask uploadTask = trackTxtRef.putFile(file, metadata);
+
+            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    System.out.println("Upload is " + progress + "% done");
+                }
+            }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                    System.out.println("Upload is paused");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    AVLoadingIndicatorView avLoadingIndicatorView = findViewById(R.id.saving_avi);
+                    avLoadingIndicatorView.setVisibility(View.GONE);
+                    LinearLayout linearLayout = findViewById(R.id.lin_lay);
+                    Snackbar.make(linearLayout, "Your upload is finished!", Snackbar.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     private class loadLocations extends AsyncTask<String, Void, String> {
@@ -620,5 +623,6 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
             rl.setVisibility(View.GONE);
         }
     }
+
 
 }

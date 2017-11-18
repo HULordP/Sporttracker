@@ -1,11 +1,11 @@
 package com.example.olahbence.sporttracker.Friends.MyFriends;
 
-public class UserDatas {
-    String name;
-    String email;
-    String id;
+public class UserData {
+    private String name;
+    private String email;
+    private String id;
 
-    public UserDatas() {
+    public UserData() {
     }
 
     public String getId() {

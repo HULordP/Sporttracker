@@ -22,11 +22,6 @@ public class AveragePaceAdapter extends RecyclerView.Adapter<AveragePaceAdapter.
         notifyItemInserted(position);
     }
 
-    public void remove(int position) {
-        values.remove(position);
-        notifyItemRemoved(position);
-    }
-
     @Override
     public AveragePaceAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                             int viewType) {

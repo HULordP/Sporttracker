@@ -47,8 +47,10 @@ public class DistanceFragment extends Fragment implements OnMapReadyCallback {
             toEmail = extras.getString("Email");
             toName = extras.getString("Name");
             String identity = extras.getString("Identity");
-            if (!identity.equals("ResultListActivity"))
-                helper = true;
+            if (identity != null) {
+                if (!identity.equals("ResultListActivity"))
+                    helper = true;
+            }
         }
     }
 

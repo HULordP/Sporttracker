@@ -43,15 +43,16 @@ public class CurrentData extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_current_data);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Current data");
-        mLongitude = (TextView) findViewById(R.id.longitude);
-        mLatitude = (TextView) findViewById(R.id.latitude);
-        mSpeed = (TextView) findViewById(R.id.speed);
-        mHeight = (TextView) findViewById(R.id.height);
-        mTechnology = (TextView) findViewById(R.id.technology);
-        mPositionTime = (TextView) findViewById(R.id.positionTime);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle("Current data");
+        mLongitude = findViewById(R.id.longitude);
+        mLatitude = findViewById(R.id.latitude);
+        mSpeed = findViewById(R.id.speed);
+        mHeight = findViewById(R.id.height);
+        mTechnology = findViewById(R.id.technology);
+        mPositionTime = findViewById(R.id.positionTime);
         getLocationPermission();
         mLocationCallback = new LocationCallback() {
             @Override
@@ -113,8 +114,6 @@ public class CurrentData extends AppCompatActivity {
                             editTextViews();
                             createLocationRequest();
                             startLocationUpdates();
-                        } else {
-                            //TBD
                         }
                     }
                 });

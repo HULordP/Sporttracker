@@ -14,7 +14,7 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
     private List<SearchRow> values;
     private OnItemClicked onClick;
 
-    public FriendsSearchAdapter(List<SearchRow> myDataset, OnItemClicked click) {
+    FriendsSearchAdapter(List<SearchRow> myDataset, OnItemClicked click) {
         values = myDataset;
         onClick = click;
     }
@@ -24,11 +24,6 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
         notifyItemInserted(position);
     }
 
-    public void remove(int position) {
-        values.remove(position);
-        notifyItemRemoved(position);
-    }
-
     @Override
     public FriendsSearchAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                               int viewType) {
@@ -36,19 +31,18 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
                 parent.getContext());
         View v =
                 inflater.inflate(R.layout.friends_search_item, parent, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final SearchRow resultRow = values.get(position);
         holder.txtEmail.setText(resultRow.getEmail());
         holder.txtName.setText(resultRow.getName());
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClick.onItemClick(position);
+                onClick.onItemClick(holder.getAdapterPosition());
             }
         });
     }
@@ -63,15 +57,15 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtEmail;
-        public TextView txtName;
         public View layout;
+        TextView txtEmail;
+        TextView txtName;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             layout = v;
-            txtEmail = (TextView) v.findViewById(R.id.friends_result_item_email);
-            txtName = (TextView) v.findViewById(R.id.friends_result_item_name);
+            txtEmail = v.findViewById(R.id.friends_result_item_email);
+            txtName = v.findViewById(R.id.friends_result_item_name);
         }
     }
 

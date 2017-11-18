@@ -14,7 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.example.olahbence.sporttracker.Friends.MyFriends.UserDatas;
+import com.example.olahbence.sporttracker.Friends.MyFriends.UserData;
 import com.example.olahbence.sporttracker.R;
 import com.example.olahbence.sporttracker.Result.Result.ResultActivity;
 import com.example.olahbence.sporttracker.Tracking.Database.Track;
@@ -37,19 +37,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class FriendsActivities extends AppCompatActivity implements FriendsActivitesAdapter.OnItemClicked {
+public class FriendsActivities extends AppCompatActivity implements FriendsActivitiesAdapter.OnItemClicked {
 
     private RecyclerView mRecyclerView;
-    private String TAG;
-    private FriendsActivitesAdapter mAdapter;
+    private FriendsActivitiesAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
     private List<FriendsActivitiesRow> input;
-    private List<UserDatas> users;
+    private List<UserData> users;
     private List<String> userKeys;
     private List<Track> trackList;
-    private int index = 0;
     private List<FriendsActivitiesRow> allTrack;
+    private int index = 0;
     private int i = 0;
     private int ii = 0;
     private ValueEventListener getTracks = new ValueEventListener() {
@@ -57,62 +57,68 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 Track track = childSnapshot.getValue(Track.class);
-                track.setKey(childSnapshot.getKey());
-                trackList.add(track);
-                Date date = new Date(track.getDate());
-                android.text.format.DateFormat df = new android.text.format.DateFormat();
-                String dateToDisplay = DateFormat.format("yyyy-MM-dd hh:mm a", date).toString();
-                double distanceToUpload = Double.parseDouble(track.getDistance());
-                FriendsActivitiesRow current =
-                        new FriendsActivitiesRow(users.get(i).getEmail(), users.get(i).getName(),
-                                dateToDisplay, String.format("%.2f", distanceToUpload) + " km", track.getTime());
-                userKeys.add(users.get(i).getId());
-                allTrack.add(current);
-            }
-            if (allTrack.size() > 1)
-                sortActivites(allTrack);
-            Collections.reverse(allTrack);
-            Collections.reverse(trackList);
-            Collections.reverse(userKeys);
-            while (index != 10) {
-                if (allTrack.size() == index)
-                    break;
-                input.add(allTrack.get(index));
-                index++;
-            }
-            mAdapter.notifyDataSetChanged();
-            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
-                        if (index + 1 != allTrack.size()) {
-                            int temp = 5;
-                            while (temp != 0) {
-                                if (allTrack.size() == index + 1) {
+                if (track != null) {
+                    track.setKey(childSnapshot.getKey());
+                    trackList.add(track);
+                    Date date = new Date(track.getDate());
+                    String dateToDisplay = DateFormat.format("yyyy-MM-dd hh:mm a",
+                            date).toString();
+                    double distanceToUpload = Double.parseDouble(track.getDistance());
+                    FriendsActivitiesRow current =
+                            new FriendsActivitiesRow(users.get(i).getEmail(), users.get(i).getName(),
+                                    dateToDisplay, String.format(Locale.ENGLISH, "%.2f",
+                                    distanceToUpload) + " km", track.getTime());
+                    userKeys.add(users.get(i).getId());
+                    allTrack.add(current);
+                }
+                if (allTrack.size() > 1)
+                    sortActivities(allTrack);
+                Collections.reverse(allTrack);
+                Collections.reverse(trackList);
+                Collections.reverse(userKeys);
+                while (index != 10) {
+                    if (allTrack.size() == index)
+                        break;
+                    input.add(allTrack.get(index));
+                    index++;
+                }
+                mAdapter.notifyDataSetChanged();
+                mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
+                            if (index + 1 != allTrack.size()) {
+                                int temp = 5;
+                                while (temp != 0) {
+                                    if (allTrack.size() < 6)
+                                        break;
+                                    if (allTrack.size() == index + 1) {
+                                        input.add(allTrack.get(index));
+                                        break;
+                                    }
                                     input.add(allTrack.get(index));
-                                    break;
+                                    index++;
+                                    temp--;
                                 }
-                                input.add(allTrack.get(index));
-                                index++;
-                                temp--;
+                                recyclerView.post(new Runnable() {
+                                    public void run() {
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                });
                             }
-                            recyclerView.post(new Runnable() {
-                                public void run() {
-                                    mAdapter.notifyDataSetChanged();
-                                }
-                            });
                         }
                     }
-                }
-            });
-            RelativeLayout rl = findViewById(R.id.relative_layout);
-            rl.setVisibility(View.GONE);
-            i++;
+                });
+                RelativeLayout rl = findViewById(R.id.relative_layout);
+                rl.setVisibility(View.GONE);
+                i++;
+            }
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
+            String TAG = "";
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
         }
     };
@@ -120,22 +126,24 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                UserDatas ud = childSnapshot.getValue(UserDatas.class);
-                ud.setId(childSnapshot.getKey());
-                users.add(ud);
-                FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-                DatabaseReference myRef2 = mDatabase.getReference("Tracks");
-                myRef2.child(users.get(ii).getId()).addListenerForSingleValueEvent(getTracks);
-                ii++;
+                UserData ud = childSnapshot.getValue(UserData.class);
+                if (ud != null) {
+                    ud.setId(childSnapshot.getKey());
+                    users.add(ud);
+                    FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef2 = mDatabase.getReference("Tracks");
+                    myRef2.child(users.get(ii).getId()).addListenerForSingleValueEvent(getTracks);
+                    ii++;
+                }
             }
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
+            String TAG = "";
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
         }
     };
-    private File downloadedFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,9 +151,11 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
         setContentView(R.layout.activity_friends_activities);
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Friends Activities");
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Friends Activities");
+            ActionBar ab = getSupportActionBar();
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
         mRecyclerView = findViewById(R.id.friends_result_list);
 
@@ -160,7 +170,7 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
         trackList = new ArrayList<>();
         users = new ArrayList<>();
         userKeys = new ArrayList<>();
-        mAdapter = new FriendsActivitesAdapter(input, this);
+        mAdapter = new FriendsActivitiesAdapter(input, this);
         mRecyclerView.setAdapter(mAdapter);
 
         loadActivities();
@@ -178,10 +188,11 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
         DatabaseReference myRef = mDatabase.getReference("Connections");
-        myRef.child(user.getUid()).addListenerForSingleValueEvent(getConnections);
+        if (user != null)
+            myRef.child(user.getUid()).addListenerForSingleValueEvent(getConnections);
     }
 
-    private void sortActivites(List<FriendsActivitiesRow> a) {
+    private void sortActivities(List<FriendsActivitiesRow> a) {
         int aux = a.size();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
         for (int temp = 0; temp < aux - 1; temp++)
@@ -189,12 +200,12 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
                 Date before = new Date();
                 Date after = new Date();
                 try {
-                    before = format.parse(a.get(temp).getmDate());
+                    before = format.parse(a.get(temp).getDate());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 try {
-                    after = format.parse(a.get(k).getmDate());
+                    after = format.parse(a.get(k).getDate());
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -219,9 +230,6 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
         Track track = trackList.get(position);
         String filename = track.getFilename();
         Date date = new Date(track.getDate());
-
-
-        android.text.format.DateFormat df = new android.text.format.DateFormat();
         final String toSend = DateFormat.format("yyyy-MM-dd hh:mm a", date).toString();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -229,7 +237,7 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
         StorageReference trackTxtRef = storageRef.child("Tracks" + File.separator + filename + ".txt");
 
         String filePath = getApplicationContext().getFilesDir().getPath() + File.separator + "track.txt";
-        downloadedFile = new File(filePath);
+        File downloadedFile = new File(filePath);
         trackTxtRef.getFile(downloadedFile).addOnSuccessListener
                 (new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override

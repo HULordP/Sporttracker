@@ -47,13 +47,14 @@ public class RegisterActivity extends AppCompatActivity {
             }
         };
         setContentView(R.layout.activity_register);
-        mEmail = (EditText) findViewById(R.id.email_register);
-        mPassword = (EditText) findViewById(R.id.password_register);
-        mUsername = (EditText) findViewById(R.id.username_register);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mEmail = findViewById(R.id.email_register);
+        mPassword = findViewById(R.id.password_register);
+        mUsername = findViewById(R.id.username_register);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null)
+            ab.setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -81,28 +82,30 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             String userName = mUsername.getText().toString();
-                            user.updateProfile(
-                                    new UserProfileChangeRequest.Builder().
-                                            setDisplayName(userName).build());
-                            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-                            DatabaseReference myRef = mDatabase.getReference("Users");
-                            myRef.child(user.getUid()).child("email").setValue(user.getEmail());
-                            myRef.child(user.getUid()).child("name").setValue(userName);
-                            user.sendEmailVerification()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                Log.d(TAG, "Email sent.");
+                            if (user != null) {
+                                user.updateProfile(
+                                        new UserProfileChangeRequest.Builder().
+                                                setDisplayName(userName).build());
+                                FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                                DatabaseReference myRef = mDatabase.getReference("Users");
+                                myRef.child(user.getUid()).child("email").setValue(user.getEmail());
+                                myRef.child(user.getUid()).child("name").setValue(userName);
+                                user.sendEmailVerification()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Log.d(TAG, "Email sent.");
+                                                }
                                             }
-                                        }
-                                    });
-                            Intent i = new Intent(RegisterActivity.this, VerifyEmail.class);
-                            startActivity(i);
-                        } else {
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Registration failed.",
-                                    Toast.LENGTH_SHORT).show();
+                                        });
+                                Intent i = new Intent(RegisterActivity.this, VerifyEmail.class);
+                                startActivity(i);
+                            } else {
+                                Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(RegisterActivity.this, "Registration failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });

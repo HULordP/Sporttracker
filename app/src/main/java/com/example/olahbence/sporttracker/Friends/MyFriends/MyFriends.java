@@ -29,12 +29,12 @@ import java.util.List;
 
 public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnItemClicked {
 
-    private String TAG;
     private List<MyFriendsRow> input;
     private RecyclerView mRecyclerView;
     private MyFriendsAdapter mAdapter;
     private List<String> IDs;
     private int aux;
+    private int pos;
     private ValueEventListener getFriends = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -56,32 +56,36 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
+            String TAG = "";
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
         }
     };
     private ValueEventListener getData = new ValueEventListener() {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
-            UserDatas myFriend = dataSnapshot.getValue(UserDatas.class);
+            UserData myFriend = dataSnapshot.getValue(UserData.class);
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
-            String ID = user.getUid();
-            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = mDatabase.getReference("Connections");
-            myRef.child(ID).child(IDs.get(aux)).child("email").setValue(myFriend.getEmail());
-            myRef.child(ID).child(IDs.get(aux)).child("name").setValue(myFriend.getName());
-            myRef.child(IDs.get(aux)).child(ID).child("email").setValue(user.getEmail());
-            myRef.child(IDs.get(aux)).child(ID).child("name").setValue(user.getDisplayName());
-            input.clear();
-            loadFriends();
+            if (user != null && myFriend != null) {
+                String ID = user.getUid();
+                FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = mDatabase.getReference("Connections");
+                myRef.child(ID).child(IDs.get(aux)).child("email").setValue(myFriend.getEmail());
+                myRef.child(ID).child(IDs.get(aux)).child("name").setValue(myFriend.getName());
+                myRef.child(IDs.get(aux)).child(ID).child("email").setValue(user.getEmail());
+                myRef.child(IDs.get(aux)).child(ID).child("name").setValue(user.getDisplayName());
+                input.clear();
+                loadFriends();
+            }
+
         }
 
         @Override
         public void onCancelled(DatabaseError databaseError) {
+            String TAG = "";
             Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
         }
     };
-    private int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +99,11 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         rl.setVisibility(View.VISIBLE);
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("My friends");
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("My friends");
+            ActionBar ab = getSupportActionBar();
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -126,10 +131,12 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
     private void loadFriends() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        String ID = user.getUid();
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = mDatabase.getReference("Friends");
-        myRef.child(ID).addListenerForSingleValueEvent(getFriends);
+        if (user != null) {
+            String ID = user.getUid();
+            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = mDatabase.getReference("Friends");
+            myRef.child(ID).addListenerForSingleValueEvent(getFriends);
+        }
     }
 
     @Override
@@ -137,13 +144,15 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         aux = position;
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
-        String ID = user.getUid();
-        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = mDatabase.getReference("Friends");
-        myRef.child(ID).child(IDs.get(position)).child("connected").setValue("true");
-        DatabaseReference myRef2 = mDatabase.getReference("Users");
-        myRef2.child(IDs.get(position)).addListenerForSingleValueEvent(getData);
-        showText("Adding was successful");
+        if (user != null) {
+            String ID = user.getUid();
+            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = mDatabase.getReference("Friends");
+            myRef.child(ID).child(IDs.get(position)).child("connected").setValue("true");
+            DatabaseReference myRef2 = mDatabase.getReference("Users");
+            myRef2.child(IDs.get(position)).addListenerForSingleValueEvent(getData);
+            showText("Adding was successful");
+        }
     }
 
     @Override
@@ -152,18 +161,20 @@ public class MyFriends extends AppCompatActivity implements MyFriendsAdapter.OnI
         if (resultCode == 1) {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mAuth.getCurrentUser();
-            String ID = user.getUid();
-            FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = mDatabase.getReference("Friends");
-            myRef.child(ID).child(IDs.get(pos)).removeValue();
-            myRef.child(IDs.get(pos)).child(ID).removeValue();
-            DatabaseReference myRef2 = mDatabase.getReference("Connections");
-            myRef2.child(ID).child(IDs.get(pos)).removeValue();
-            myRef2.child(IDs.get(pos)).child(ID).removeValue();
-            input.remove(pos);
-            IDs.remove(pos);
-            mAdapter.notifyDataSetChanged();
-            showText("Deleting was successful");
+            if (user != null) {
+                String ID = user.getUid();
+                FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = mDatabase.getReference("Friends");
+                myRef.child(ID).child(IDs.get(pos)).removeValue();
+                myRef.child(IDs.get(pos)).child(ID).removeValue();
+                DatabaseReference myRef2 = mDatabase.getReference("Connections");
+                myRef2.child(ID).child(IDs.get(pos)).removeValue();
+                myRef2.child(IDs.get(pos)).child(ID).removeValue();
+                input.remove(pos);
+                IDs.remove(pos);
+                mAdapter.notifyDataSetChanged();
+                showText("Deleting was successful");
+            }
         }
     }
 

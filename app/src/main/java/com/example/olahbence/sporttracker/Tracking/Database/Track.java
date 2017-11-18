@@ -4,12 +4,12 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
 public class Track {
-    public String key;
     public long date;
     public String distance;
-    public String filename;
     public String time;
-    public String postID;
+    private String key;
+    private String filename;
+    private String postID;
 
     public Track() {
     }

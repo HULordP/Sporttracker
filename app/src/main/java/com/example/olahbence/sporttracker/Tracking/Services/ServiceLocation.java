@@ -53,8 +53,6 @@ public class ServiceLocation extends Service {
     private float f1 = 0;
     private int i1 = 1;
     private long f2;
-    private File mLocations;
-    private File mAveragePaces;
     private long averagePace;
     private BroadcastReceiver mTimeReceiver = new BroadcastReceiver() {
         @Override
@@ -87,7 +85,6 @@ public class ServiceLocation extends Service {
             }
         }
     };
-
     private BroadcastReceiver mStopReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -164,8 +161,6 @@ public class ServiceLocation extends Service {
 
             mLocationPermissionGranted = true;
 
-        } else {
-            //TBD
         }
     }
 
@@ -203,27 +198,28 @@ public class ServiceLocation extends Service {
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-        Notification notification = new Notification.Builder(this)
+        return new Notification.Builder(this)
                 .setOngoing(true)
                 .setContentTitle("Sport tracker")
                 .setContentText(text)
                 .setVisibility(VISIBILITY_PUBLIC)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pendingIntent).build();
-
-        return notification;
     }
-
 
     private void updateNotification(String text) {
         Notification notification = getMyNotification(text);
         NotificationManager notifMan = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notifMan.notify(NOTIF_FOREGROUND_ID, notification);
+        if (notifMan != null) {
+            notifMan.notify(NOTIF_FOREGROUND_ID, notification);
+        }
     }
 
     private void cancelNotification() {
         NotificationManager notifMan = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notifMan.cancelAll();
+        if (notifMan != null) {
+            notifMan.cancelAll();
+        }
     }
 
     @Override
@@ -255,7 +251,7 @@ public class ServiceLocation extends Service {
                     + "," + mLastKnownLocation.getLongitude() + "\n";
             String filePath = getApplicationContext().getFilesDir().getPath()
                     + File.separator + filename + ".txt";
-            mLocations = new File(filePath);
+            File mLocations = new File(filePath);
             if (!mLocations.exists()) {
                 try {
                     boolean created = mLocations.createNewFile();
@@ -290,7 +286,7 @@ public class ServiceLocation extends Service {
         public void run() {
             String filePath = getApplicationContext().getFilesDir().getPath()
                     + File.separator + filename + ".txt";
-            mAveragePaces = new File(filePath);
+            File mAveragePaces = new File(filePath);
 
 
             if (!mAveragePaces.exists()) {

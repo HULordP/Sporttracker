@@ -3,7 +3,6 @@ package com.example.olahbence.sporttracker.MainMenu;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -36,9 +35,6 @@ public class BigMapsActivity extends AppCompatActivity implements OnMapReadyCall
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation;
     private int DEFAULT_ZOOM = 14;
-    private Handler mHandler;
-    private int mInterval = 5000;
-    private SupportMapFragment bigMap;
     private boolean aux = true;
     private boolean aux2 = true;
     private Marker mMarker;
@@ -49,13 +45,14 @@ public class BigMapsActivity extends AppCompatActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_big_maps);
-        bigMap = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment bigMap = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.bigMap);
         bigMap.getMapAsync(this);
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Map");
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle("Map");
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -143,8 +140,6 @@ public class BigMapsActivity extends AppCompatActivity implements OnMapReadyCall
                             putMarker();
                             createLocationRequest();
                             startLocationUpdates();
-                        } else {
-                            //TBD
                         }
                     }
                 });

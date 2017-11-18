@@ -1,41 +1,37 @@
 package com.example.olahbence.sporttracker.Result.ResultList;
 
 public class ResultsListRow {
-    public String mDate;
-    public String mDistance;
-    public String mTime;
+    private String date;
+    private String distance;
+    private String time;
 
-    public ResultsListRow(String mDate, String mDistance, String mTime) {
-        this.mDate = mDate;
-        this.mDistance = mDistance;
-        this.mTime = mTime;
+    ResultsListRow(String date, String distance, String time) {
+        this.date = date;
+        this.distance = distance;
+        this.time = time;
     }
 
-    public ResultsListRow() {
-
+    String getDate() {
+        return date;
     }
 
-    public String getmDate() {
-        return mDate;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public void setmDate(String mDate) {
-        this.mDate = mDate;
+    String getDistance() {
+        return distance;
     }
 
-    public String getmDistance() {
-        return mDistance;
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 
-    public void setmDistance(String mDistance) {
-        this.mDistance = mDistance;
+    String getTime() {
+        return time;
     }
 
-    public String getmTime() {
-        return mTime;
-    }
-
-    public void setmTime(String mTime) {
-        this.mTime = mTime;
+    public void setTime(String time) {
+        this.time = time;
     }
 }

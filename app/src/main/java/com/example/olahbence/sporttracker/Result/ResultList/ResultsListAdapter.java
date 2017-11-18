@@ -15,7 +15,7 @@ public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.
     private List<ResultsListRow> values;
     private OnItemClicked onClick;
 
-    public ResultsListAdapter(List<ResultsListRow> myDataset, OnItemClicked click) {
+    ResultsListAdapter(List<ResultsListRow> myDataset, OnItemClicked click) {
         values = myDataset;
         onClick = click;
     }
@@ -25,11 +25,6 @@ public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.
         notifyItemInserted(position);
     }
 
-    public void remove(int position) {
-        values.remove(position);
-        notifyItemRemoved(position);
-    }
-
     @Override
     public ResultsListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                             int viewType) {
@@ -37,20 +32,19 @@ public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.
                 parent.getContext());
         View v =
                 inflater.inflate(R.layout.resultlist_item, parent, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final ResultsListRow ResultsListRow = values.get(position);
-        holder.txtDate.setText(ResultsListRow.getmDate());
-        holder.txtTime.setText(ResultsListRow.getmTime());
-        holder.txtDistance.setText(ResultsListRow.getmDistance());
+        holder.txtDate.setText(ResultsListRow.getDate());
+        holder.txtTime.setText(ResultsListRow.getTime());
+        holder.txtDistance.setText(ResultsListRow.getDistance());
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClick.onItemClick(position);
+                onClick.onItemClick(holder.getAdapterPosition());
             }
         });
 
@@ -66,19 +60,19 @@ public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtDate;
-        public TextView txtTime;
-        public TextView txtDistance;
-        public ImageView imgRunning;
         public View layout;
+        TextView txtDate;
+        TextView txtTime;
+        TextView txtDistance;
+        ImageView imgRunning;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             layout = v;
-            txtDate = (TextView) v.findViewById(R.id.item_date);
-            txtTime = (TextView) v.findViewById(R.id.item_time);
-            txtDistance = (TextView) v.findViewById(R.id.item_distance);
-            imgRunning = (ImageView) v.findViewById(R.id.running_icon);
+            txtDate = v.findViewById(R.id.item_date);
+            txtTime = v.findViewById(R.id.item_time);
+            txtDistance = v.findViewById(R.id.item_distance);
+            imgRunning = v.findViewById(R.id.running_icon);
         }
     }
 

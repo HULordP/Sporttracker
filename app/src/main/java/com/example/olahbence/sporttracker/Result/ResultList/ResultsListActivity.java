@@ -34,10 +34,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ResultsListActivity extends AppCompatActivity implements ResultsListAdapter.OnItemClicked {
 
-    public static final String STOP_LOADING = "STOP_LOADING";
     public String TAG;
     private RecyclerView mRecyclerView;
     private ResultsListAdapter mAdapter;
@@ -51,54 +51,56 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         public void onDataChange(DataSnapshot dataSnapshot) {
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 Track track = childSnapshot.getValue(Track.class);
-                track.setKey(childSnapshot.getKey());
-                trackList.add(track);
-                Date date = new Date(track.getDate());
-                android.text.format.DateFormat df = new android.text.format.DateFormat();
-                String dateToDisplay = DateFormat.format("yyyy-MM-dd hh:mm a", date).toString();
-                double distanceToUpload = Double.parseDouble(track.getDistance());
-                ResultsListRow current =
-                        new ResultsListRow(dateToDisplay, String.format("%.2f", distanceToUpload) + " km", track.getTime());
-                allTrack.add(current);
-            }
-            Collections.reverse(allTrack);
-            Collections.reverse(trackList);
-            while (index != 10) {
-                if (allTrack.size() == index)
-                    break;
-                input.add(allTrack.get(index));
-                index++;
-            }
-            mAdapter.notifyDataSetChanged();
-            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
-                        if (index + 1 != allTrack.size()) {
-                            int temp = 5;
-                            while (temp != 0) {
-                                if (allTrack.size() < 6)
-                                    break;
-                                if (allTrack.size() == index + 1) {
+                if (track != null) {
+                    track.setKey(childSnapshot.getKey());
+                    trackList.add(track);
+                    Date date = new Date(track.getDate());
+                    String dateToDisplay = DateFormat.format("yyyy-MM-dd hh:mm a", date).toString();
+                    double distanceToUpload = Double.parseDouble(track.getDistance());
+                    ResultsListRow current =
+                            new ResultsListRow(dateToDisplay, String.format(Locale.ENGLISH,
+                                    "%.2f", distanceToUpload) + " km", track.getTime());
+                    allTrack.add(current);
+                }
+                Collections.reverse(allTrack);
+                Collections.reverse(trackList);
+                while (index != 10) {
+                    if (allTrack.size() == index)
+                        break;
+                    input.add(allTrack.get(index));
+                    index++;
+                }
+                mAdapter.notifyDataSetChanged();
+                mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
+                            if (index + 1 != allTrack.size()) {
+                                int temp = 5;
+                                while (temp != 0) {
+                                    if (allTrack.size() < 6)
+                                        break;
+                                    if (allTrack.size() == index + 1) {
+                                        input.add(allTrack.get(index));
+                                        break;
+                                    }
                                     input.add(allTrack.get(index));
-                                    break;
+                                    index++;
+                                    temp--;
                                 }
-                                input.add(allTrack.get(index));
-                                index++;
-                                temp--;
+                                recyclerView.post(new Runnable() {
+                                    public void run() {
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                });
                             }
-                            recyclerView.post(new Runnable() {
-                                public void run() {
-                                    mAdapter.notifyDataSetChanged();
-                                }
-                            });
                         }
                     }
-                }
-            });
-            RelativeLayout rl = findViewById(R.id.relative_layout);
-            rl.setVisibility(View.GONE);
+                });
+                RelativeLayout rl = findViewById(R.id.relative_layout);
+                rl.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -113,9 +115,11 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         setContentView(R.layout.activity_results_list);
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Results");
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Results");
+            ActionBar ab = getSupportActionBar();
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
         mRecyclerView = findViewById(R.id.result_list);
 
@@ -135,8 +139,10 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = mAuth.getCurrentUser();
-        DatabaseReference myRef = mDatabase.getReference("Tracks").child(fUser.getUid());
-        myRef.addListenerForSingleValueEvent(trackListener);
+        if (fUser != null) {
+            DatabaseReference myRef = mDatabase.getReference("Tracks").child(fUser.getUid());
+            myRef.addListenerForSingleValueEvent(trackListener);
+        }
 
     }
 
@@ -155,8 +161,6 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
         String filename = track.getFilename();
         Date date = new Date(track.getDate());
 
-
-        android.text.format.DateFormat df = new android.text.format.DateFormat();
         final String toSend = DateFormat.format("yyyy-MM-dd hh:mm a", date).toString();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();

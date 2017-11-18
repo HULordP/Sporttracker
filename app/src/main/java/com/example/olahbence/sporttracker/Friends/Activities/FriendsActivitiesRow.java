@@ -3,44 +3,36 @@ package com.example.olahbence.sporttracker.Friends.Activities;
 public class FriendsActivitiesRow {
     public String email;
     public String name;
-    public String mDate;
-    public String mDistance;
-    public String mTime;
+    private String date;
+    private String distance;
+    private String time;
 
-    public FriendsActivitiesRow(String email, String name, String mDate, String mDistance, String mTime) {
+    FriendsActivitiesRow(String email, String name, String date, String distance, String time) {
         this.email = email;
         this.name = name;
-        this.mDate = mDate;
-        this.mDistance = mDistance;
-        this.mTime = mTime;
+        this.date = date;
+        this.distance = distance;
+        this.time = time;
     }
 
-    public FriendsActivitiesRow() {
-
+    String getDate() {
+        return date;
     }
 
-    public String getmDate() {
-        return mDate;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public void setmDate(String mDate) {
-        this.mDate = mDate;
+    String getDistance() {
+        return distance;
     }
 
-    public String getmDistance() {
-        return mDistance;
+    String getTime() {
+        return time;
     }
 
-    public void setmDistance(String mDistance) {
-        this.mDistance = mDistance;
-    }
-
-    public String getmTime() {
-        return mTime;
-    }
-
-    public void setmTime(String mTime) {
-        this.mTime = mTime;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getEmail() {

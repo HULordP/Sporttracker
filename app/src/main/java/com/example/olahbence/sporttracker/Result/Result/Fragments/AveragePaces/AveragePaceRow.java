@@ -1,20 +1,11 @@
 package com.example.olahbence.sporttracker.Result.Result.Fragments.AveragePaces;
 
-public class AveragePaceRow {
+class AveragePaceRow {
     private String averagePace;
     private String number;
 
     AveragePaceRow(String averagePace) {
         this.averagePace = averagePace;
-    }
-
-    public AveragePaceRow(String averagePace, String number) {
-        this.averagePace = averagePace;
-        this.number = number;
-    }
-
-    public AveragePaceRow() {
-
     }
 
     String getNumber() {
@@ -27,10 +18,6 @@ public class AveragePaceRow {
 
     String getAveragePace() {
         return averagePace;
-    }
-
-    public void setAveragePace(String averagePace) {
-        this.averagePace = averagePace;
     }
 }
 

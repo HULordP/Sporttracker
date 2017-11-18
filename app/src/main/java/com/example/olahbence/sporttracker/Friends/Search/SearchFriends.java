@@ -75,9 +75,11 @@ public class SearchFriends extends AppCompatActivity implements FriendsSearchAda
         setContentView(R.layout.activity_search_friends);
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
-        getSupportActionBar().setTitle("Search");
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Search");
+            ActionBar ab = getSupportActionBar();
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
         mEditText = findViewById(R.id.friend_email);
 
         mRecyclerView = findViewById(R.id.friends_result_list);
@@ -142,5 +144,4 @@ public class SearchFriends extends AppCompatActivity implements FriendsSearchAda
             Snackbar.make(linearLayout, "Adding was successful", Snackbar.LENGTH_LONG).show();
         }
     }
-
 }

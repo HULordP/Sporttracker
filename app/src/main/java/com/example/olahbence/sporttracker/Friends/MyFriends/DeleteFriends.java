@@ -1,8 +1,5 @@
 package com.example.olahbence.sporttracker.Friends.MyFriends;
 
-//TODO push notification
-//TODO chat
-
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;

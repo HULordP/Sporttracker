@@ -4,10 +4,6 @@ public class SearchRow {
     public String email;
     public String name;
 
-    public SearchRow(String email) {
-        this.email = email;
-    }
-
     public SearchRow() {
 
     }
