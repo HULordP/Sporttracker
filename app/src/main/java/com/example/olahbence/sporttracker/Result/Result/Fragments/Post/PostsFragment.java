@@ -51,11 +51,13 @@ public class PostsFragment extends Fragment {
         @Override
         public void onDataChange(DataSnapshot dataSnapshot) {
             input.clear();
+            allPost.clear();
+            index = 0;
             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                 PostRow postRow = childSnapshot.getValue(PostRow.class);
                 allPost.add(postRow);
             }
-            Collections.reverse(input);
+            Collections.reverse(allPost);
             while (index != 10) {
                 if (allPost.size() == index)
                     break;
@@ -72,6 +74,8 @@ public class PostsFragment extends Fragment {
                             int temp = 5;
                             while (temp != 0) {
                                 if (allPost.size() < 6)
+                                    break;
+                                if (allPost.size() == index)
                                     break;
                                 if (allPost.size() == index + 1) {
                                     input.add(allPost.get(index));
@@ -247,4 +251,5 @@ public class PostsFragment extends Fragment {
             myRef2.removeEventListener(getMessages);
         myRef.removeEventListener(getPostID);
     }
+
 }

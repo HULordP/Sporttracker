@@ -81,6 +81,8 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
                                 while (temp != 0) {
                                     if (allTrack.size() < 6)
                                         break;
+                                    if (allTrack.size() == index)
+                                        break;
                                     if (allTrack.size() == index + 1) {
                                         input.add(allTrack.get(index));
                                         break;
@@ -185,4 +187,5 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
             }
         });
     }
+
 }
