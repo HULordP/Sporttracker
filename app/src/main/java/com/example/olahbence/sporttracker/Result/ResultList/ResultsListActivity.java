@@ -62,47 +62,47 @@ public class ResultsListActivity extends AppCompatActivity implements ResultsLis
                                     "%.2f", distanceToUpload) + " km", track.getTime());
                     allTrack.add(current);
                 }
-                Collections.reverse(allTrack);
-                Collections.reverse(trackList);
-                while (index != 10) {
-                    if (allTrack.size() == index)
-                        break;
-                    input.add(allTrack.get(index));
-                    index++;
-                }
-                mAdapter.notifyDataSetChanged();
-                mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                        if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
-                            if (index + 1 != allTrack.size()) {
-                                int temp = 5;
-                                while (temp != 0) {
-                                    if (allTrack.size() < 6)
-                                        break;
-                                    if (allTrack.size() == index)
-                                        break;
-                                    if (allTrack.size() == index + 1) {
-                                        input.add(allTrack.get(index));
-                                        break;
-                                    }
+            }
+            Collections.reverse(allTrack);
+            Collections.reverse(trackList);
+            while (index != 10) {
+                if (allTrack.size() == index)
+                    break;
+                input.add(allTrack.get(index));
+                index++;
+            }
+            mAdapter.notifyDataSetChanged();
+            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
+                        if (index + 1 != allTrack.size()) {
+                            int temp = 5;
+                            while (temp != 0) {
+                                if (allTrack.size() < 6)
+                                    break;
+                                if (allTrack.size() == index)
+                                    break;
+                                if (allTrack.size() == index + 1) {
                                     input.add(allTrack.get(index));
-                                    index++;
-                                    temp--;
+                                    break;
                                 }
-                                recyclerView.post(new Runnable() {
-                                    public void run() {
-                                        mAdapter.notifyDataSetChanged();
-                                    }
-                                });
+                                input.add(allTrack.get(index));
+                                index++;
+                                temp--;
                             }
+                            recyclerView.post(new Runnable() {
+                                public void run() {
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            });
                         }
                     }
-                });
-                RelativeLayout rl = findViewById(R.id.relative_layout);
-                rl.setVisibility(View.GONE);
-            }
+                }
+            });
+            RelativeLayout rl = findViewById(R.id.relative_layout);
+            rl.setVisibility(View.GONE);
         }
 
         @Override

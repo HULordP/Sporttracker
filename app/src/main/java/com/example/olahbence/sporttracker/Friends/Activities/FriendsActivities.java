@@ -71,48 +71,48 @@ public class FriendsActivities extends AppCompatActivity implements FriendsActiv
                     userKeys.add(users.get(i).getId());
                     allTrack.add(current);
                 }
-                if (allTrack.size() > 1)
-                    sortActivities(allTrack);
-                Collections.reverse(allTrack);
-                Collections.reverse(trackList);
-                Collections.reverse(userKeys);
-                while (index != 10) {
-                    if (allTrack.size() == index)
-                        break;
-                    input.add(allTrack.get(index));
-                    index++;
-                }
-                mAdapter.notifyDataSetChanged();
-                mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                    @Override
-                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                        super.onScrolled(recyclerView, dx, dy);
-                        if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
-                            if (index + 1 != allTrack.size()) {
-                                int temp = 5;
-                                while (temp != 0) {
-                                    if (allTrack.size() < 6)
-                                        break;
-                                    if (allTrack.size() == index)
-                                        break;
-                                    if (allTrack.size() == index + 1) {
-                                        input.add(allTrack.get(index));
-                                        break;
-                                    }
+            }
+            if (allTrack.size() > 1)
+                sortActivities(allTrack);
+            Collections.reverse(allTrack);
+            Collections.reverse(trackList);
+            Collections.reverse(userKeys);
+            while (index != 10) {
+                if (allTrack.size() == index)
+                    break;
+                input.add(allTrack.get(index));
+                index++;
+            }
+            mAdapter.notifyDataSetChanged();
+            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    if (mLayoutManager.findLastCompletelyVisibleItemPosition() == input.size() - 1) {
+                        if (index + 1 != allTrack.size()) {
+                            int temp = 5;
+                            while (temp != 0) {
+                                if (allTrack.size() < 6)
+                                    break;
+                                if (allTrack.size() == index)
+                                    break;
+                                if (allTrack.size() == index + 1) {
                                     input.add(allTrack.get(index));
-                                    index++;
-                                    temp--;
+                                    break;
                                 }
-                                recyclerView.post(new Runnable() {
-                                    public void run() {
-                                        mAdapter.notifyDataSetChanged();
-                                    }
-                                });
+                                input.add(allTrack.get(index));
+                                index++;
+                                temp--;
                             }
+                            recyclerView.post(new Runnable() {
+                                public void run() {
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            });
                         }
                     }
-                });
-            }
+                }
+            });
             RelativeLayout rl = findViewById(R.id.relative_layout);
             rl.setVisibility(View.GONE);
             i++;

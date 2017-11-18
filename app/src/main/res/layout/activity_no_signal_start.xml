@@ -14,7 +14,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/your_gps_signal_is_weak_dou_you_still_want_to_start_your_activity"
+        android:text="@string/your_gps_signal_is_weak_do_you_still_want_to_start_your_activity"
         android:textColor="@color/white"
         android:textSize="18sp" />
 

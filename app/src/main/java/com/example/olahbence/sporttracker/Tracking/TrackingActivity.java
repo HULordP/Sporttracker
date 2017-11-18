@@ -167,8 +167,14 @@ public class TrackingActivity extends AppCompatActivity implements OnMapReadyCal
             if (mBeforeLastLocation != null) {
                 f1 = intent.getFloatExtra(ServiceLocation.KEY_DISTANCE, 0);
                 s1 = getString(R.string.distance);
-                toDisplay = s1 + "\n" + f1 / 1000 + " km";
-                mDistance.setText(toDisplay);
+                if (f1 / 1000 > 0.1) {
+                    toDisplay = s1 + "\n" + f1 / 1000 + " km";
+                    mDistance.setText(toDisplay);
+                } else {
+                    toDisplay = s1 + "\n" + "0 km";
+                    mDistance.setText(toDisplay);
+                }
+
             }
         }
     };
