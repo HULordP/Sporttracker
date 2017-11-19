@@ -15,7 +15,7 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.View
     private List<MyFriendsRow> values;
     private OnItemClicked onClick;
 
-    MyFriendsAdapter(List<MyFriendsRow> myDataset, OnItemClicked click) {
+    public MyFriendsAdapter(List<MyFriendsRow> myDataset, OnItemClicked click) {
         values = myDataset;
         onClick = click;
     }
@@ -71,10 +71,10 @@ public class MyFriendsAdapter extends RecyclerView.Adapter<MyFriendsAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View layout;
-        TextView txtEmail;
-        TextView txtName;
-        ImageButton btnAdd;
-        ImageButton btnClear;
+        public TextView txtEmail;
+        public TextView txtName;
+        public ImageButton btnAdd;
+        public ImageButton btnClear;
 
         ViewHolder(View v) {
             super(v);

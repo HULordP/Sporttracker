@@ -1,10 +1,10 @@
 package com.example.olahbence.sporttracker.Result.Result.Fragments.Post;
 
 public class PostRow {
-    private long date;
-    private String username;
-    private String message;
-    private String email;
+    public long date;
+    public String username;
+    public String message;
+    public String email;
 
     public PostRow() {
     }
@@ -17,12 +17,21 @@ public class PostRow {
         this.date = date;
     }
 
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    String getMessage() {
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getMessage() {
         return message;
+    }
+
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getEmail() {
@@ -32,4 +41,5 @@ public class PostRow {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }

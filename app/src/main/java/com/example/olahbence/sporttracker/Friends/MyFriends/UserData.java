@@ -1,9 +1,9 @@
 package com.example.olahbence.sporttracker.Friends.MyFriends;
 
 public class UserData {
-    private String name;
-    private String email;
-    private String id;
+    public String name;
+    public String email;
+    public String id;
 
     public UserData() {
     }

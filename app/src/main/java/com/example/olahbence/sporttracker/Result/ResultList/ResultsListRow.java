@@ -1,17 +1,17 @@
 package com.example.olahbence.sporttracker.Result.ResultList;
 
 public class ResultsListRow {
-    private String date;
-    private String distance;
-    private String time;
+    public String date;
+    public String distance;
+    public String time;
 
-    ResultsListRow(String date, String distance, String time) {
+    public ResultsListRow(String date, String distance, String time) {
         this.date = date;
         this.distance = distance;
         this.time = time;
     }
 
-    String getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -19,7 +19,7 @@ public class ResultsListRow {
         this.date = date;
     }
 
-    String getDistance() {
+    public String getDistance() {
         return distance;
     }
 
@@ -27,7 +27,7 @@ public class ResultsListRow {
         this.distance = distance;
     }
 
-    String getTime() {
+    public String getTime() {
         return time;
     }
 

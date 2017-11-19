@@ -3,12 +3,12 @@ package com.example.olahbence.sporttracker.Friends.MyFriends;
 public class MyFriendsRow {
     public String email;
     public String name;
-    private String connected;
+    public String connected;
 
     public MyFriendsRow() {
     }
 
-    String getConnected() {
+    public String getConnected() {
         return connected;
     }
 

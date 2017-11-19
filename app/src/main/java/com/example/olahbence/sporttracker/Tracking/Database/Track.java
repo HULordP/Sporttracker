@@ -7,9 +7,9 @@ public class Track {
     public long date;
     public String distance;
     public String time;
-    private String key;
-    private String filename;
-    private String postID;
+    public String key;
+    public String filename;
+    public String postID;
 
     public Track() {
     }

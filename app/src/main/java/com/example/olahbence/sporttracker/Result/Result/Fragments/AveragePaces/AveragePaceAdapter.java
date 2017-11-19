@@ -13,7 +13,7 @@ import java.util.List;
 public class AveragePaceAdapter extends RecyclerView.Adapter<AveragePaceAdapter.ViewHolder> {
     private List<AveragePaceRow> values;
 
-    AveragePaceAdapter(List<AveragePaceRow> myDataset) {
+    public AveragePaceAdapter(List<AveragePaceRow> myDataset) {
         values = myDataset;
     }
 
@@ -45,8 +45,8 @@ public class AveragePaceAdapter extends RecyclerView.Adapter<AveragePaceAdapter.
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtAveragePace;
-        TextView txtNumber;
+        public TextView txtAveragePace;
+        public TextView txtNumber;
 
         ViewHolder(View v) {
             super(v);

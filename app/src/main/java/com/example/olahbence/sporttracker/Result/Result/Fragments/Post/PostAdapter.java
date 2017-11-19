@@ -15,7 +15,7 @@ import java.util.List;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private List<PostRow> values;
 
-    PostAdapter(List<PostRow> myDataset) {
+    public PostAdapter(List<PostRow> myDataset) {
         values = myDataset;
     }
 
@@ -52,10 +52,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView username;
-        TextView date;
-        TextView message;
-        TextView email;
+        public TextView username;
+        public TextView date;
+        public TextView message;
+        public TextView email;
 
         ViewHolder(View v) {
             super(v);

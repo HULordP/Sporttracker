@@ -159,6 +159,7 @@ public class PostsFragment extends Fragment {
                 }
             }
             etPost.setText("");
+            btnSend.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -235,10 +236,12 @@ public class PostsFragment extends Fragment {
                     if (fUser != null) {
                         myRef = mDatabase.getReference("Tracks").child(fUser.getUid()).child(trackKey);
                         myRef.addListenerForSingleValueEvent(sendMessage);
+                        btnSend.setVisibility(View.GONE);
                     }
                 } else {
                     myRef = mDatabase.getReference("Tracks").child(userKey).child(trackKey);
                     myRef.addListenerForSingleValueEvent(sendMessage);
+                    btnSend.setVisibility(View.GONE);
                 }
             }
         });

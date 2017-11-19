@@ -15,7 +15,7 @@ public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.
     private List<ResultsListRow> values;
     private OnItemClicked onClick;
 
-    ResultsListAdapter(List<ResultsListRow> myDataset, OnItemClicked click) {
+    public ResultsListAdapter(List<ResultsListRow> myDataset, OnItemClicked click) {
         values = myDataset;
         onClick = click;
     }
@@ -61,10 +61,10 @@ public class ResultsListAdapter extends RecyclerView.Adapter<ResultsListAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View layout;
-        TextView txtDate;
-        TextView txtTime;
-        TextView txtDistance;
-        ImageView imgRunning;
+        public TextView txtDate;
+        public TextView txtTime;
+        public TextView txtDistance;
+        public ImageView imgRunning;
 
         ViewHolder(View v) {
             super(v);

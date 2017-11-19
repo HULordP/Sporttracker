@@ -3,11 +3,11 @@ package com.example.olahbence.sporttracker.Friends.Activities;
 public class FriendsActivitiesRow {
     public String email;
     public String name;
-    private String date;
-    private String distance;
-    private String time;
+    public String date;
+    public String distance;
+    public String time;
 
-    FriendsActivitiesRow(String email, String name, String date, String distance, String time) {
+    public FriendsActivitiesRow(String email, String name, String date, String distance, String time) {
         this.email = email;
         this.name = name;
         this.date = date;
@@ -15,7 +15,7 @@ public class FriendsActivitiesRow {
         this.time = time;
     }
 
-    String getDate() {
+    public String getDate() {
         return date;
     }
 
@@ -23,11 +23,15 @@ public class FriendsActivitiesRow {
         this.date = date;
     }
 
-    String getDistance() {
+    public String getDistance() {
         return distance;
     }
 
-    String getTime() {
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getTime() {
         return time;
     }
 

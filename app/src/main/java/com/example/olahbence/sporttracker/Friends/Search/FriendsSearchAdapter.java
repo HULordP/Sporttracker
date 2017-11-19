@@ -14,7 +14,7 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
     private List<SearchRow> values;
     private OnItemClicked onClick;
 
-    FriendsSearchAdapter(List<SearchRow> myDataset, OnItemClicked click) {
+    public FriendsSearchAdapter(List<SearchRow> myDataset, OnItemClicked click) {
         values = myDataset;
         onClick = click;
     }
@@ -58,8 +58,8 @@ public class FriendsSearchAdapter extends RecyclerView.Adapter<FriendsSearchAdap
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View layout;
-        TextView txtEmail;
-        TextView txtName;
+        public TextView txtEmail;
+        public TextView txtName;
 
         ViewHolder(View v) {
             super(v);

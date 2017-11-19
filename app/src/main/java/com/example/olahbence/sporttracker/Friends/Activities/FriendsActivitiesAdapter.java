@@ -61,11 +61,11 @@ public class FriendsActivitiesAdapter extends RecyclerView.Adapter<FriendsActivi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public View layout;
-        TextView txtEmail;
-        TextView txtName;
-        TextView txtDate;
-        TextView txtTime;
-        TextView txtDistance;
+        public TextView txtEmail;
+        public TextView txtName;
+        public TextView txtDate;
+        public TextView txtTime;
+        public TextView txtDistance;
 
         ViewHolder(View v) {
             super(v);
